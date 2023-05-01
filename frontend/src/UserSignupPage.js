@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 class UserSignupPage extends React.Component{
 
@@ -12,48 +13,28 @@ class UserSignupPage extends React.Component{
     };
 
     onChange = event =>{
-        const name = event.target.name;
-        const value = event.target.value;
+
+        const {name, value} = event.target
+        //const name = event.target.name;
+        //const value = event.target.value;
         this.setState({
             [name]: value
         })
     };
 
+    onClickSignup = event =>{
+        event.preventDefault()
+        
+        const {username,displayName,password} = this.state
 
-    /*
-    onChangeUsername = event => {
-        console.log(event.target.value)
-        this.setState({
-            username: event.target.value
-        })
+        const body = {
+            "username": username,
+            "displayName": displayName,
+            "password": password
+        }
+
+        axios.post("/api/1.0/users",body)
     };
-
-    onChangeDisplayName = event =>{
-        this.setState({
-            displayName: event.target.value
-        })
-    };
-
-
-    onChangePassword = event =>{
-        this.setState({
-            password: event.target.value
-        })
-    };
-
-    
-    onChangeConfirmPassword = event =>{
-        this.setState({
-            confirmPassword: event.target.value
-        })
-    };
-    */
-
-    /*
-    onChangeUsername(event){
-        console.log(event.target.value)
-    }
-    */
 
     render(){
         return(
@@ -75,7 +56,7 @@ class UserSignupPage extends React.Component{
                     <label>Confirm password</label>
                     <input type="password" name="confirmPassword" onChange={this.onChange}/>
                 </div>
-                <button>Sign Up</button>
+                <button onClick={this.onClickSignup}>Sign Up</button>
             </form>
         );
     }
