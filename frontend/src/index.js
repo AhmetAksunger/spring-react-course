@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import UserSignupPage from './UserSignupPage';
 import reportWebVitals from './reportWebVitals';
+import "./bootstrap-override.scss";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -38,26 +38,28 @@ class UserSignupPage extends React.Component{
 
     render(){
         return(
-            <form> 
-                <h1>Sign up</h1>
-                <div>
-                    <label>Username</label>
-                    <input type="text" name="username" onChange={this.onChange}/>
-                </div>
-                <div>
-                    <label>Display Name</label>
-                    <input type="text" name="displayName" onChange={this.onChange}/>
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input type="password" name="password" onChange={this.onChange}/>
-                </div>
-                <div>
-                    <label>Confirm password</label>
-                    <input type="password" name="confirmPassword" onChange={this.onChange}/>
-                </div>
-                <button onClick={this.onClickSignup}>Sign Up</button>
-            </form>
+            <div className="container">
+                <form> 
+                    <h1 className="text-center">Sign up</h1>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input type="text" className="form-control" name="username" onChange={this.onChange}/>
+                    </div>
+                    <div className="form-group">
+                        <label>Display Name</label>
+                        <input type="text" className="form-control" name="displayName" onChange={this.onChange}/>
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input type="password" className="form-control" name="password" onChange={this.onChange}/>
+                    </div>
+                    <div className="form-group">
+                        <label>Confirm password</label>
+                        <input type="password" className="form-control" name="confirmPassword" onChange={this.onChange}/>
+                    </div>
+                    <button className="btn btn-primary" onClick={this.onClickSignup}>Sign Up</button>
+                </form>
+            </div>
         );
     }
 
