@@ -23,7 +23,7 @@ class UserSignupPage extends React.Component{
         })
     };
 
-    onClickSignup = event =>{
+    onClickSignup = async event =>{
         event.preventDefault()
         
         const {username,displayName,password,pendingApiCall} = this.state
@@ -38,7 +38,17 @@ class UserSignupPage extends React.Component{
             "password": password
         }
 
-        signup(body)
+        try {
+            const response = await signup(body)
+            this.setState({pendingApiCall: false})
+            
+        } catch (error) {
+            this.setState({pendingApiCall: false})
+        }
+        
+        
+
+        /*
         .then(
             (response) => {
                 this.setState({
@@ -50,6 +60,7 @@ class UserSignupPage extends React.Component{
                 pendingApiCall: false
             })
         })
+        */
 
     };
 

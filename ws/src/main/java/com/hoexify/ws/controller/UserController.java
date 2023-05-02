@@ -1,7 +1,11 @@
 package com.hoexify.ws.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hoexify.ws.business.UserService;
 import com.hoexify.ws.entity.User;
+import com.hoexify.ws.error.ApiErrorResponse;
 import com.hoexify.ws.shared.GenericResponse;
 
 @RestController
@@ -21,9 +26,19 @@ public class UserController {
 
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public GenericResponse createUser(@RequestBody User user) {
+	public ResponseEntity<?> createUser(@RequestBody User user) {
+		
+		if(user.getUsername() == null || user.getUsername().isBlank()) {
+			ApiErrorResponse error = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(),"Validation error","/api/1.0/users");
+			Map<String,String> validationErrors = new HashMap<>();
+			validationErrors.put("username", "Username cannot be empty");
+			error.setValidationErrors(validationErrors);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+		}
+		
 		userService.save(user);
-		return new GenericResponse("user created");
+		
+		return new ResponseEntity<>(new GenericResponse("user created"),HttpStatus.CREATED);
 	}
 	
 }
