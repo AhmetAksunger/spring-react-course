@@ -20,13 +20,22 @@ class UserSignupPage extends React.Component{
         const {name, value} = event.target
         //const name = event.target.name;
         //const value = event.target.value;
+        const errors = {...this.state.errors}; // copy errors
+        errors[name] = undefined;
 
+        if(name == "password" || name == "confirmPassword"){
+            if(name == "password" && value != this.state.confirmPassword){
+                errors.confirmPassword = "Passwords do not match"
+            }
+            else if(name == "confirmPassword" && value != this.state.password){
+                errors.confirmPassword = "Passwords do not match"
+            }else{
+                errors.confirmPassword = undefined;
+            }
+        }
         this.setState({
             [name]: value,
-            errors: {
-                ...this.state.errors, // copy of old error values
-                [name]: undefined
-            }
+            errors: errors
         })
     };
 
@@ -87,8 +96,10 @@ class UserSignupPage extends React.Component{
             <div className="container">
                 <form> 
                     <h1 className="text-center">Sign up</h1>
-                    <Input name="username" label="Username" error ={errors.username} onChange={this.onChange} />
-                    <Input name="displayName" label="Display Name" error ={errors.displayName} onChange={this.onChange} />
+                    <Input type="text" name="username" label="Username" error ={errors.username} onChange={this.onChange} />
+                    <Input type="text" name="displayName" label="Display Name" error ={errors.displayName} onChange={this.onChange} />
+                    <Input type="password" name="password" label="Password" error ={errors.password} onChange={this.onChange} />
+                    <Input type="password" name="confirmPassword" label="Confirm Password" error ={errors.confirmPassword} onChange={this.onChange} />
                     
                     {/*
                     <div className="form-group">
@@ -99,15 +110,7 @@ class UserSignupPage extends React.Component{
                         </div>
                     </div>
                     */}
-                    <div className="form-group">
-                        <label>Password</label>
-                        <input type="password" className="form-control" name="password" onChange={this.onChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label>Confirm password</label>
-                        <input type="password" className="form-control" name="confirmPassword" onChange={this.onChange}/>
-                    </div>
-                    <button className="btn btn-primary" onClick={this.onClickSignup} disabled={this.state.pendingApiCall}>
+                    <button className="btn btn-primary" onClick={this.onClickSignup} disabled={this.state.pendingApiCall || errors.confirmPassword != undefined }>
                         {this.state.pendingApiCall ? <span class="spinner-border spinner-border-sm"></span> : ''}
                         {/* {statement ? doThisIfTrue : doThisIfNot} */}
                         Sign Up    

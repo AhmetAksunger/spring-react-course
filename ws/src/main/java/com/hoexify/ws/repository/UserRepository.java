@@ -6,4 +6,6 @@ import com.hoexify.ws.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 
+	boolean existsByUsername (String username);
+	
 }

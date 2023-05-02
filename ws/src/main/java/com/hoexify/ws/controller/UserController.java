@@ -6,6 +6,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,8 @@ import com.hoexify.ws.entity.User;
 import com.hoexify.ws.error.ApiErrorResponse;
 import com.hoexify.ws.shared.GenericResponse;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/1.0")
 public class UserController {
@@ -26,25 +31,24 @@ public class UserController {
 
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> createUser(@RequestBody User user) {
+	public GenericResponse createUser(@Valid @RequestBody User user) {
 		
-		ApiErrorResponse error = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation error", "/api/1.0/users");
-		Map<String,String> validationErrors = new HashMap<>();
-		
-		if(user.getUsername() == null || user.getUsername().isBlank()) {
-			validationErrors.put("username", "Username cannot be empty");
-		}
-		if(user.getDisplayName() == null || user.getDisplayName().isBlank()) {
-			validationErrors.put("displayName", "Display name cannot be empty");
-		}
-		
-		if(validationErrors.size() > 0) {
-			error.setValidationErrors(validationErrors);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-		}
 		userService.save(user);
 		
-		return new ResponseEntity<>(new GenericResponse("user created"),HttpStatus.CREATED);
+		return new GenericResponse("user created");
 	}
 	
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiErrorResponse handleException(MethodArgumentNotValidException exception) {
+		ApiErrorResponse error = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation error", "/api/1.0/users");
+		
+		Map<String, String>validationErrors = new HashMap<>();
+		for(FieldError fieldError:exception.getBindingResult().getFieldErrors() ) {
+			validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+		}
+		
+		error.setValidationErrors(validationErrors);
+		return error;
+	}
 }
