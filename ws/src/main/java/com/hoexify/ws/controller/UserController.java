@@ -28,14 +28,20 @@ public class UserController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<?> createUser(@RequestBody User user) {
 		
+		ApiErrorResponse error = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation error", "/api/1.0/users");
+		Map<String,String> validationErrors = new HashMap<>();
+		
 		if(user.getUsername() == null || user.getUsername().isBlank()) {
-			ApiErrorResponse error = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(),"Validation error","/api/1.0/users");
-			Map<String,String> validationErrors = new HashMap<>();
 			validationErrors.put("username", "Username cannot be empty");
+		}
+		if(user.getDisplayName() == null || user.getDisplayName().isBlank()) {
+			validationErrors.put("displayName", "Display name cannot be empty");
+		}
+		
+		if(validationErrors.size() > 0) {
 			error.setValidationErrors(validationErrors);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 		}
-		
 		userService.save(user);
 		
 		return new ResponseEntity<>(new GenericResponse("user created"),HttpStatus.CREATED);
