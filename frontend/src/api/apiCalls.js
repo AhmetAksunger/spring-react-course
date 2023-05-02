@@ -5,3 +5,7 @@ export const signup = (body) => {
     //catch will be launched if the request is failed
     return axios.post("/api/1.0/users",body)
 }
+
+export const changeLanguage = (language) => {
+    axios.defaults.headers["accept-language"] = language;
+}
