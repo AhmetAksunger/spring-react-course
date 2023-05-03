@@ -1,14 +1,14 @@
 package com.hoexify.ws.entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.hoexify.ws.repository.UserRepository;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Service
+@Component
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String>{
 
 	@Autowired

@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hoexify.ws.business.UserService;
+import com.hoexify.ws.business.UserManager;
 import com.hoexify.ws.entity.User;
 import com.hoexify.ws.error.ApiErrorResponse;
+import com.hoexify.ws.repository.UserRepository;
 import com.hoexify.ws.shared.GenericResponse;
 
 import jakarta.validation.Valid;
@@ -27,13 +28,13 @@ import jakarta.validation.Valid;
 public class UserController {
 
 	@Autowired
-	private UserService userService;
+	private UserRepository userRepository;
 
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
 	public GenericResponse createUser(@Valid @RequestBody User user) {
 		
-		userService.save(user);
+		userRepository.save(user);
 		
 		return new GenericResponse("user created");
 	}

@@ -4,5 +4,6 @@ import com.hoexify.ws.entity.User;
 
 public interface UserService {
 
-	void save(User user);
+	void save (User user);
+	
 }

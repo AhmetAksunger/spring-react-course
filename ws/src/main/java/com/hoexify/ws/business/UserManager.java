@@ -9,7 +9,7 @@ import com.hoexify.ws.entity.User;
 import com.hoexify.ws.repository.UserRepository;
 
 @Service
-public class UserManager implements UserService{
+public class UserManager implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;

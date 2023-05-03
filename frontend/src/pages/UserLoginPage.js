@@ -2,6 +2,7 @@ import React from "react";
 import Input from "../components/input"
 import { withTranslation } from "react-i18next"
 import LanguageSelector from "../components/LanguageSelector";
+import { login } from "../api/apiCalls";
 
 class UserLoginPage extends React.Component{
 
@@ -18,6 +19,15 @@ class UserLoginPage extends React.Component{
 
     }
 
+    onClickLogin = event =>{
+        event.preventDefault();
+        const creds = {
+            username: this.state.username,
+            password: this.state.password
+        }
+        login(creds)
+    }
+
     render(){
         const { t } = this.props
         const {username,password} = this.state
@@ -27,7 +37,7 @@ class UserLoginPage extends React.Component{
                     <h1>{t("Login")}</h1>
                     <Input type="text" name="username" label={t("Username")} onChange={this.onChange}/>
                     <Input type="password" name="password" label={t("Password")} onChange={this.onChange}/>
-                    <button className="btn btn-primary" disabled={!username || !password}>{t("Login")}</button>
+                    <button className="btn btn-primary" disabled={!username || !password} onClick={this.onClickLogin}>{t("Login")}</button>
                 </form>
                 <LanguageSelector />
 
