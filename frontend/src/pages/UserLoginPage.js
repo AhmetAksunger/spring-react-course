@@ -12,32 +12,7 @@ class UserLoginPage extends React.Component{
         username: null,
         password: null,
         error: null,
-        pendingApiCall: false
     };
-
-    // let's use another method to change pendingApiCall
-
-    //this method will be once called as soon as the page loads
-    componentDidMount(){
-        axios.interceptors.request.use((request) => {
-            this.setState({
-                pendingApiCall: true
-            })
-            return request;
-        })
-
-        axios.interceptors.response.use((response) => {
-            this.setState({
-                pendingApiCall: false
-            })
-            return response;
-        }, (error) => {
-            this.setState({
-                pendingApiCall: false
-            })
-            throw error;
-        })
-    }
 
     onChange = (event) =>{
         const {name,value} = event.target;
@@ -71,12 +46,12 @@ class UserLoginPage extends React.Component{
     }
 
     render(){
-        const { t } = this.props
-        const {username,password,error,pendingApiCall} = this.state
+        const { t, pendingApiCall } = this.props
+        const {username,password,error} = this.state
         return(
             <div className="container">
                 <form>
-                    <h1>{t("Login")}</h1>
+                    <h1 className="text-center">{t("Login")}</h1>
                     <Input type="text" name="username" label={t("Username")} onChange={this.onChange}/>
                     <Input type="password" name="password" label={t("Password")} onChange={this.onChange}/>
                     

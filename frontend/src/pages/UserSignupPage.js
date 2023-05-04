@@ -14,7 +14,6 @@ class UserSignupPage extends React.Component{
         displayName: null,
         password: null,
         confirmPassword: null,
-        pendingApiCall: false,
         errors: {}
     };
 
@@ -47,10 +46,6 @@ class UserSignupPage extends React.Component{
         
         const {username,displayName,password,pendingApiCall} = this.state
 
-        this.setState({
-            pendingApiCall: true
-        })
-
         const body = {
             "username": username,
             "displayName": displayName,
@@ -70,9 +65,6 @@ class UserSignupPage extends React.Component{
             
         }
         
-        this.setState({
-            pendingApiCall: false
-        })
         
         /*
         .then(
@@ -92,8 +84,8 @@ class UserSignupPage extends React.Component{
 
     render(){
         
-        const {t} = this.props;
-        const {pendingApiCall, errors} = this.state;
+        const {t,pendingApiCall} = this.props;
+        const {errors} = this.state;
         return(
             <div className="container">
                 <form> 
