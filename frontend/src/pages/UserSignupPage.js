@@ -2,6 +2,8 @@ import React from "react";
 import {signup, changeLanguage} from "../api/apiCalls"
 import Input from "../components/input"
 import { withTranslation } from "react-i18next"
+import ButtonWithProgress from "../components/ButtonWithProgress";
+import LanguageSelector from "../components/LanguageSelector";
 
 class UserSignupPage extends React.Component{
 
@@ -110,12 +112,9 @@ class UserSignupPage extends React.Component{
                         </div>
                     </div>
                     */}
-                    <button className="btn btn-primary" onClick={this.onClickSignup} disabled={this.state.pendingApiCall || errors.confirmPassword != undefined }>
-                        {this.state.pendingApiCall ? <span class="spinner-border spinner-border-sm"></span> : ''}
-                        {/* {statement ? doThisIfTrue : doThisIfNot} */}
-                        {t("Sign up")}    
-                    </button>
+                    <ButtonWithProgress buttonText={t("Sign up")} pendingApiCall={pendingApiCall} onClickMethod={this.onClickSignup} disabledStatement={pendingApiCall || errors.confirmPassword != undefined}/>
                 </form>
+                <LanguageSelector />
             </div>
         );
     }
