@@ -37,17 +37,17 @@ public class UserController {
 		return new GenericResponse("user created");
 	}
 	
-	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiErrorResponse handleException(MethodArgumentNotValidException exception) {
-		ApiErrorResponse error = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation error", "/api/1.0/users");
-		
-		Map<String, String>validationErrors = new HashMap<>();
-		for(FieldError fieldError:exception.getBindingResult().getFieldErrors() ) {
-			validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-		}
-		
-		error.setValidationErrors(validationErrors);
-		return error;
-	}
+//	@ExceptionHandler
+//	@ResponseStatus(HttpStatus.BAD_REQUEST)
+//	public ApiErrorResponse handleException(MethodArgumentNotValidException exception) {
+//		ApiErrorResponse error = new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation error", "/api/1.0/users");
+//		
+//		Map<String, String>validationErrors = new HashMap<>();
+//		for(FieldError fieldError:exception.getBindingResult().getFieldErrors() ) {
+//			validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+//		}
+//		
+//		error.setValidationErrors(validationErrors);
+//		return error;
+//	}
 }

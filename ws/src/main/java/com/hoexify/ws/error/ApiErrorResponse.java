@@ -2,9 +2,12 @@ package com.hoexify.ws.error;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiErrorResponse {
 
 	private int status;

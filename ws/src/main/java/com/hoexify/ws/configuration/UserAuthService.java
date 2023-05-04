@@ -22,7 +22,7 @@ public class UserAuthService implements UserDetailsService{
 		if(user == null) {
 			throw new UsernameNotFoundException("user not found");
 		}
-		return new MyUserDetails(user);
+		return user;
 	}
 
 }
