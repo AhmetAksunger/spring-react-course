@@ -44,7 +44,7 @@ export function withApiProgress(WrappedComponent,apiPath){
 
         render() {
         //return <div>{React.cloneElement(this.props.children, {pendingApiCall: this.state.pendingApiCall})}</div>
-        return <WrappedComponent pendingApiCall={this.state.pendingApiCall} />
+        return <WrappedComponent pendingApiCall={this.state.pendingApiCall} {...this.props} />
     }
     } 
 }

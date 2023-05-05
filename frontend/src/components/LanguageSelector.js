@@ -11,7 +11,7 @@ const LanguageSelector = (props) => {
     }
 
     return (
-        <div>
+        <div className='container mt-3'>
             <img
                 src="https://flagcdn.com/h24/tr.png"
                 srcset="https://flagcdn.com/h48/tr.png 2x"

@@ -27,6 +27,7 @@ class UserLoginPage extends React.Component{
 
     onClickLogin = async event =>{
 
+        const {onLoginSuccess} = this.props;
         this.setState({
             error: null
         })
@@ -38,10 +39,11 @@ class UserLoginPage extends React.Component{
         }
 
         try {
-            const response = await login(creds)
+            const response = await login(creds);
             this.props.history.push("/");
+            onLoginSuccess(this.state.username);
+
         } catch (error) {
-            console.log(error)
             this.setState({
                     error: error.response.data.message
                 })
