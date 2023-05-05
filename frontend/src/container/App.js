@@ -6,45 +6,29 @@ import LanguageSelector from "../components/LanguageSelector";
 import UserPage from "../pages/UserPage";
 import TopBar from "../components/TopBar";
 import { HashRouter,Switch,Route,Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import { Authentication } from "../shared/AuthenticationContext";
 
 class App extends React.Component {
 
-  state = {
-    isLoggedIn: false,
-    username: null
-  }
-
-  onLoginSuccess = (username) => {
-    this.setState({
-      isLoggedIn: true,
-      username: username
-    })
-  }
-
-  onLogoutSuccess = () => {
-    this.setState({
-      isLoggedIn: false,
-      username: null
-    })
-  }
+  static contextType = Authentication;
 
   render(){
-    const { isLoggedIn, username } = this.state;
+
+    const {isLoggedIn} = this.context.state;
+
+    const username = undefined;
+
     return (
       <div>
         <HashRouter>
-          <TopBar username={username} isLoggedIn={isLoggedIn} onLogoutSuccess={this.onLogoutSuccess} />
+          <TopBar />
           <Switch>
             <Route exact path="/" component={HomePage}/>
             {!isLoggedIn && 
-              <Route path="/login" component={(reactRouterProps) => {
-                return <UserLoginPage {...reactRouterProps} onLoginSuccess={this.onLoginSuccess} />;
-              }}/>
+              <Route path="/login" component={UserLoginPage}/>
             }
             <Route path="/signup" component={UserSignupPage}/>
-            <Route path="/user/:username" component={(reactRouterProps => {
-              return <UserPage username={username} />
-            })}/>
+            <Route path="/user/:username" component={UserPage} />
             <Redirect to="/" />
           </Switch>
         </HashRouter>

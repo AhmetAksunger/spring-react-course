@@ -2,11 +2,16 @@ import React, { Component } from 'react'
 import logo from "../assets/hoaxify.png";
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import { withTranslation } from 'react-i18next';
-
+import { Authentication } from '../shared/AuthenticationContext';
 class TopBar extends Component {
 
+    static contextType = Authentication;
+
     render() {
-    const { t , isLoggedIn, username, onLogoutSuccess} = this.props;
+    const { t } = this.props;
+
+    const { state , onLogoutSuccess} = this.context; 
+    const { isLoggedIn, username } = state;
 
     //const cannot be reassigned once assigned
     //we should use let
@@ -55,6 +60,7 @@ class TopBar extends Component {
             </nav>
         </div>
     )
+
   }
 }
 
