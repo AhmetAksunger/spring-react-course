@@ -4,6 +4,7 @@ import Input from "../components/input"
 import { withTranslation } from "react-i18next"
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import LanguageSelector from "../components/LanguageSelector";
+import { withApiProgress } from "../shared/ApiProgress";
 
 class UserSignupPage extends React.Component{
 
@@ -106,11 +107,12 @@ class UserSignupPage extends React.Component{
                     */}
                     <ButtonWithProgress buttonText={t("Sign up")} pendingApiCall={pendingApiCall} onClickMethod={this.onClickSignup} disabledStatement={pendingApiCall || errors.confirmPassword != undefined}/>
                 </form>
-                <LanguageSelector />
             </div>
         );
     }
 
 }
 
-export default withTranslation()(UserSignupPage);
+const UserSignupPageWithTranslation = withTranslation()(UserSignupPage)
+const UserSignupPageWithApiProgress = withApiProgress(UserSignupPageWithTranslation,"/api/1.0/users")
+export default UserSignupPageWithApiProgress;

@@ -5,6 +5,9 @@ import LanguageSelector from "../components/LanguageSelector";
 import { login } from "../api/apiCalls";
 import axios from "axios";
 import ButtonWithProgress from "../components/ButtonWithProgress";
+import { withApiProgress } from "../shared/ApiProgress";
+
+
 
 class UserLoginPage extends React.Component{
 
@@ -36,12 +39,12 @@ class UserLoginPage extends React.Component{
 
         try {
             const response = await login(creds)
+            this.props.history.push("/");
         } catch (error) {
-            if(error.response.data.message){
-                this.setState({
+            console.log(error)
+            this.setState({
                     error: error.response.data.message
                 })
-            }
         }
     }
 
@@ -79,12 +82,12 @@ class UserLoginPage extends React.Component{
                     <ButtonWithProgress buttonText={t("Login")} onClickMethod={this.onClickLogin} pendingApiCall={pendingApiCall} disabledStatement={!username || !password || pendingApiCall} />
                             
                     </form>
-                <LanguageSelector />
-
             </div>
             
         )
     }
 }
 
-export default withTranslation()(UserLoginPage);
+const LoginPageWithTranslation = withTranslation()(UserLoginPage);
+const LoginPageWithApiProgress = withApiProgress(LoginPageWithTranslation,"/api/1.0/auth");
+export default LoginPageWithApiProgress;
