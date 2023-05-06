@@ -6,14 +6,19 @@ import App from './container/App';
 import reportWebVitals from './reportWebVitals';
 import "./bootstrap-override.scss";
 import "./i18n"
-import AuthenticationContext from './shared/AuthenticationContext';
-
+//import AuthenticationContext from './shared/AuthenticationContext';
+import { Provider } from 'react-redux';
+import { act } from 'react-dom/test-utils';
+import configureStore from './redux/configureStore';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const store = configureStore();
+
 root.render(
-  <AuthenticationContext>
-  <App />
-  </AuthenticationContext>
+  <Provider store={store}>
+    <App />
+  </Provider>
 
 );
 

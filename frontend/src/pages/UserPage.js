@@ -1,5 +1,6 @@
 import React from 'react';
 import ProfileCard from '../components/ProfileCard';
+import { connect } from 'react-redux';
 
 const UserPage = (props) => {
     return (
@@ -9,4 +10,12 @@ const UserPage = (props) => {
     );
 };
 
-export default UserPage;
+
+
+const mapStateToProps = (store) => {
+    return {
+        username: store.username
+    }
+}
+
+export default connect(mapStateToProps)(UserPage);

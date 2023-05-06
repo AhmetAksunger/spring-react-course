@@ -6,12 +6,12 @@ import { login } from "../api/apiCalls";
 import axios from "axios";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import { withApiProgress } from "../shared/ApiProgress";
-import { Authentication } from "../shared/AuthenticationContext";
+import { connect } from "react-redux";
+import { loginSuccess } from "../redux/authActions";
+//import { Authentication } from "../shared/AuthenticationContext";
 
 
 class UserLoginPage extends React.Component{
-
-    static contextType = Authentication;
 
     state = {
         username: null,
@@ -29,7 +29,6 @@ class UserLoginPage extends React.Component{
 
     onClickLogin = async event =>{
 
-        const {onLoginSuccess} = this.context;
         this.setState({
             error: null
         })
@@ -50,7 +49,8 @@ class UserLoginPage extends React.Component{
                 image: response.data.image,
                 password: this.state.password
             }
-            onLoginSuccess(authState);
+
+            this.props.dispatch(loginSuccess(authState))
 
         } catch (error) {
             this.setState({
@@ -101,4 +101,5 @@ class UserLoginPage extends React.Component{
 
 const LoginPageWithTranslation = withTranslation()(UserLoginPage);
 const LoginPageWithApiProgress = withApiProgress(LoginPageWithTranslation,"/api/1.0/auth");
-export default LoginPageWithApiProgress;
+
+export default connect()(LoginPageWithApiProgress);

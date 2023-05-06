@@ -6,17 +6,14 @@ import LanguageSelector from "../components/LanguageSelector";
 import UserPage from "../pages/UserPage";
 import TopBar from "../components/TopBar";
 import { HashRouter,Switch,Route,Redirect } from "react-router-dom/cjs/react-router-dom.min";
-import { Authentication } from "../shared/AuthenticationContext";
+import { connect } from "react-redux";
+//import { Authentication } from "../shared/AuthenticationContext";
 
 class App extends React.Component {
 
-  static contextType = Authentication;
-
   render(){
 
-    const {isLoggedIn} = this.context.state;
-
-    const username = undefined;
+    const isLoggedIn = this.props.isLoggedIn;
 
     return (
       <div>
@@ -40,4 +37,11 @@ class App extends React.Component {
   
 }
 
-export default App;
+
+const mapStateToProps = (store) => {
+  return {
+      isLoggedIn: store.isLoggedIn,
+  }
+}
+
+export default connect(mapStateToProps)(App);
