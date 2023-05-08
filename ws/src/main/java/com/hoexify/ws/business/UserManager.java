@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,16 +38,9 @@ public class UserManager implements UserService {
 	}
 
 	@Override
-	public List<GetUsersResponse> getUsers() {
-		List<User> users = userRepository.findAll();
-		List<GetUsersResponse> responses = new ArrayList<>();
-		
-		for (User user : users) {
-			GetUsersResponse response = mapperService.forResponse().map(user, GetUsersResponse.class);
-			responses.add(response);
-		}
-		
-		return responses;
+	public Page<GetUsersResponse> getUsers(Pageable page) {
+	    Page<User> users = userRepository.findAll(page);
+	    return users.map(user -> mapperService.forResponse().map(user, GetUsersResponse.class));
 	}
 
 	
