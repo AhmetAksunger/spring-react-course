@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Input from "../components/input"
-import { withTranslation } from "react-i18next"
-import LanguageSelector from "../components/LanguageSelector";
+import { useTranslation } from "react-i18next"
 import { login } from "../api/apiCalls";
-import axios from "axios";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import { withApiProgress } from "../shared/ApiProgress";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/authActions";
 //import { Authentication } from "../shared/AuthenticationContext";
 
@@ -16,6 +14,8 @@ const UserLoginPage = (props) => {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     const [error,  setError] = useState();
+
+    const dispatch = useDispatch();
 
     // a hook function that will be executed if any effects occurs on the spesificed fields
     useEffect(() => {
@@ -43,15 +43,16 @@ const UserLoginPage = (props) => {
                 image: response.data.image,
                 password: password
             }
-
-            props.dispatch(loginSuccess(authState))
+            
+            dispatch(loginSuccess(authState))
 
         } catch (error) {
             setError(error.response.data.message)
         }
     }
-
-    const { t, pendingApiCall } = props
+    
+    const {t} = useTranslation();
+    const {pendingApiCall } = props
     return(
         <div className="container">
             <form>
@@ -89,7 +90,6 @@ const UserLoginPage = (props) => {
 
 }
 
-const LoginPageWithTranslation = withTranslation()(UserLoginPage);
-const LoginPageWithApiProgress = withApiProgress(LoginPageWithTranslation,"/api/1.0/auth");
+const LoginPageWithApiProgress = withApiProgress(UserLoginPage,"/api/1.0/auth");
 
-export default connect()(LoginPageWithApiProgress);
+export default LoginPageWithApiProgress;

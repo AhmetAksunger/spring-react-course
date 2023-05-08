@@ -1,11 +1,21 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom/cjs/react-router-dom';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom/cjs/react-router-dom';
 //import { Authentication } from '../shared/AuthenticationContext';
 
 const ProfileCard = (props) => {
 
-    const loggedInUsername = props.username;
-    const pathUsername = props.match.params.username;
+
+    const routeParams = useParams();
+
+    const {loggedInUsername} = useSelector((store) => {
+        return {
+            loggedInUsername: store.username
+        }
+    })
+
+    
+    const pathUsername = routeParams.username;
 
     return (
         <div>
@@ -15,4 +25,4 @@ const ProfileCard = (props) => {
 
 };
 
-export default withRouter(ProfileCard);
+export default ProfileCard;

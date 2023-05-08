@@ -5,17 +5,11 @@ import { connect } from 'react-redux';
 const UserPage = (props) => {
     return (
         <div className='container'>
-            <ProfileCard username = {props.username} />
+            <ProfileCard />
         </div>
     );
 };
 
 
 
-const mapStateToProps = (store) => {
-    return {
-        username: store.username
-    }
-}
-
-export default connect(mapStateToProps)(UserPage);
+export default (UserPage);

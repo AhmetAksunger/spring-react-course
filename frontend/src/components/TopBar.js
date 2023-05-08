@@ -1,22 +1,24 @@
-import React, { Component } from 'react'
 import logo from "../assets/hoaxify.png";
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
-import { withTranslation } from 'react-i18next';
+import { useTranslation} from 'react-i18next';
 //import { Authentication } from '../shared/AuthenticationContext';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from '../redux/authActions';
 
-class TopBar extends Component {
+const TopBar = (props) => {
 
-    onClickLogout = () => {
-        this.props.dispatch(logoutSuccess())
+    const {t} = useTranslation();
+    const dispatch = useDispatch();
+    const { isLoggedIn, username} = useSelector((store) => {
+        return {
+            isLoggedIn: store.isLoggedIn,
+            username: store.username
+        };
+    });
+
+    const onClickLogout = () => {
+        dispatch(logoutSuccess())
     }
-
-
-    render() {
-    const { t, isLoggedIn, username } = this.props;
-
-    const onLogoutSuccess = () => {}
 
     //const cannot be reassigned once assigned
     //we should use let
@@ -43,7 +45,7 @@ class TopBar extends Component {
                 {username}
                 </Link>
             </li>
-            <li className='nav-link text-white me-5' onClick={this.onClickLogout}>
+            <li className='nav-link text-white me-5' onClick={onClickLogout}>
                 <Link className="nav-link" to="/login">
                 {t("Logout")}
                 </Link>
@@ -65,17 +67,7 @@ class TopBar extends Component {
             </nav>
         </div>
     )
-
-  }
 }
 
-const TopBarWithTranslation = withTranslation()(TopBar);
 
-const mapStateToProps = (store) => {
-    return {
-        isLoggedIn: store.isLoggedIn,
-        username: store.username
-    }
-}
-
-export default connect(mapStateToProps)(TopBarWithTranslation);
+export default TopBar;

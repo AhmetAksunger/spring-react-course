@@ -1,63 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import {signup, changeLanguage, login} from "../api/apiCalls"
 import Input from "../components/input"
-import { withTranslation } from "react-i18next"
+import { useTranslation } from "react-i18next"
 import ButtonWithProgress from "../components/ButtonWithProgress";
-import LanguageSelector from "../components/LanguageSelector";
 import { withApiProgress } from "../shared/ApiProgress";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/authActions";
 
-class UserSignupPage extends React.Component{
+const UserSignupPage = (props) => {
 
     //each class component must override render
     
-    state = {
+    const dispatch = useDispatch();
+
+    const [form, setForm] = useState({
         username: null,
         displayName: null,
         password: null,
-        confirmPassword: null,
-        errors: {}
-    };
+        confirmPassword: null
+    });
+    
+    const [errors, setErrors] = useState({});
 
-    onChange = event =>{
+
+    const onChange = (event) =>{
 
         const {name, value} = event.target
         //const name = event.target.name;
         //const value = event.target.value;
-        const errors = {...this.state.errors}; // copy errors
-        errors[name] = undefined;
+        const errorsCopy = {...errors}; // copy errors
+        errorsCopy[name] = undefined;
 
         if(name == "password" || name == "confirmPassword"){
-            if(name == "password" && value != this.state.confirmPassword){
-                errors.confirmPassword = this.props.t("Passwords do not match")
+            if(name == "password" && value !== form.confirmPassword){
+                errorsCopy.confirmPassword = t("Passwords do not match")
             }
-            else if(name == "confirmPassword" && value != this.state.password){
-                errors.confirmPassword = this.props.t("Passwords do not match")
+            else if(name == "confirmPassword" && value !== form.password){
+                errorsCopy.confirmPassword = t("Passwords do not match")
             }else{
-                errors.confirmPassword = undefined;
+                errorsCopy.confirmPassword = undefined;
             }
         }
-        this.setState({
-            [name]: value,
-            errors: errors
-        })
+        setErrors(errorsCopy);
+        
+        const formCopy = {...form};
+        formCopy[name] = value;
+
+        setForm(formCopy);
     };
 
-    onClickSignup = async event =>{
+
+    const onClickSignup = async event =>{
         event.preventDefault()
         
-        const {username,displayName,password,pendingApiCall} = this.state
-
         const body = {
-            "username": username,
-            "displayName": displayName,
-            "password": password
+            "username": form.username,
+            "displayName": form.displayName,
+            "password": form.password
         }
 
         try {
             const response = await signup(body)
-            console.log("signed up successfully");
 
             const creds = {
                 username: body.username,
@@ -73,68 +76,50 @@ class UserSignupPage extends React.Component{
                 password: body.password
             }
 
-            this.props.dispatch(loginSuccess(authState))
+            dispatch(loginSuccess(authState))
 
-            this.props.history.push("/")
+            props.history.push("/")
             
         } catch (error) {
-            
+            console.log(error)
             if(error.response.data.validationErrors != null){
-                this.setState({
-                    errors: error.response.data.validationErrors 
-                })
+                setErrors(error.response.data.validationErrors)
             }
             
         }
         
         
-        /*
-        .then(
-            (response) => {
-                this.setState({
-                    pendingApiCall: false
-                })
-            }
-        ).catch((error) => {
-            this.setState({
-                pendingApiCall: false
-            })
-        })
-        */
 
     };
 
-    render(){
-        
-        const {t,pendingApiCall} = this.props;
-        const {errors} = this.state;
-        return(
-            <div className="container">
-                <form> 
-                    <h1 className="text-center">{t("Sign up")}</h1>
-                    <Input type="text" name="username" label={t("Username")} error ={errors.username} onChange={this.onChange} />
-                    <Input type="text" name="displayName" label={t("Display Name")} error ={errors.displayName} onChange={this.onChange} />
-                    <Input type="password" name="password" label={t("Password")} error ={errors.password} onChange={this.onChange} />
-                    <Input type="password" name="confirmPassword" label={t("Confirm Password")} error ={errors.confirmPassword} onChange={this.onChange} />
-                    
-                    {/*
-                    <div className="form-group">
-                        <label>Username</label>
-                        <input type="text" className={errors.username == null ? "form-control" : "form-control is-invalid"} name="username" onChange={this.onChange}/>
-                        <div className="invalid-feedback">
-                            {errors.username}
-                        </div>
+    const {t} = useTranslation();
+    const {pendingApiCall} = props;
+    return(
+        <div className="container">
+            <form> 
+                <h1 className="text-center">{t("Sign up")}</h1>
+                <Input type="text" name="username" label={t("Username")} error ={errors.username} onChange={onChange} />
+                <Input type="text" name="displayName" label={t("Display Name")} error ={errors.displayName} onChange={onChange} />
+                <Input type="password" name="password" label={t("Password")} error ={errors.password} onChange={onChange} />
+                <Input type="password" name="confirmPassword" label={t("Confirm Password")} error ={errors.confirmPassword} onChange={onChange} />
+                
+                {/*
+                <div className="form-group">
+                    <label>Username</label>
+                    <input type="text" className={errors.username == null ? "form-control" : "form-control is-invalid"} name="username" onChange={this.onChange}/>
+                    <div className="invalid-feedback">
+                        {errors.username}
                     </div>
-                    */}
-                    <ButtonWithProgress buttonText={t("Sign up")} pendingApiCall={pendingApiCall} onClickMethod={this.onClickSignup} disabledStatement={pendingApiCall || errors.confirmPassword != undefined}/>
-                </form>
-            </div>
-        );
-    }
+                </div>
+                */}
+                <ButtonWithProgress buttonText={t("Sign up")} pendingApiCall={pendingApiCall} onClickMethod={onClickSignup} disabledStatement={pendingApiCall || errors.confirmPassword !== undefined}/>
+                
+            </form>
+        </div>
+    );
 
 }
 
-const UserSignupPageWithTranslation = withTranslation()(UserSignupPage)
-const UserSignupPageWithApiProgress = withApiProgress(UserSignupPageWithTranslation,"/api/1.0/users")
+const UserSignupPageWithApiProgress = withApiProgress(UserSignupPage,"/api/1.0/users")
 
-export default connect()(UserSignupPageWithApiProgress);
+export default UserSignupPageWithApiProgress;
