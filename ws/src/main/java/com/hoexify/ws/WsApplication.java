@@ -1,5 +1,6 @@
 package com.hoexify.ws;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,14 +22,25 @@ public class WsApplication {
 			
 			@Override
 			public void run(String... args) throws Exception {
-				// TODO Auto-generated method stub
-				User user = new User();
-				user.setUsername("user1");
-				user.setDisplayName("display1");
-				user.setPassword("P4ssword");
-				userService.save(user);
+				
+				for(int i = 1; i<=10; i++) {
+				
+					User user = new User();
+					user.setUsername("user" + i);
+					user.setDisplayName("display" + i);
+					user.setPassword("P4ssword");
+					userService.save(user);
+					
+				}
+				
 			}
 		};
+	}
+	
+
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 	
 }

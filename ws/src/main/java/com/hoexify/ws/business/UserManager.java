@@ -1,11 +1,16 @@
 package com.hoexify.ws.business;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hoexify.ws.dto.GetUsersResponse;
 import com.hoexify.ws.entity.User;
+import com.hoexify.ws.mapper.ModelMapperService;
 import com.hoexify.ws.repository.UserRepository;
 
 @Service
@@ -17,6 +22,9 @@ public class UserManager implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private ModelMapperService mapperService;
+	
 	@Override
 	public void save(User user) {
 		
@@ -24,6 +32,19 @@ public class UserManager implements UserService {
 		user.setPassword(encryptedPassword);
 		userRepository.save(user);
 		
+	}
+
+	@Override
+	public List<GetUsersResponse> getUsers() {
+		List<User> users = userRepository.findAll();
+		List<GetUsersResponse> responses = new ArrayList<>();
+		
+		for (User user : users) {
+			GetUsersResponse response = mapperService.forResponse().map(user, GetUsersResponse.class);
+			responses.add(response);
+		}
+		
+		return responses;
 	}
 
 	
