@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../components/input"
 import { withTranslation } from "react-i18next"
 import LanguageSelector from "../components/LanguageSelector";
@@ -11,92 +11,82 @@ import { loginSuccess } from "../redux/authActions";
 //import { Authentication } from "../shared/AuthenticationContext";
 
 
-class UserLoginPage extends React.Component{
+const UserLoginPage = (props) => {
 
-    state = {
-        username: null,
-        password: null,
-        error: null,
-    };
+    const [username, setUsername] = useState();
+    const [password, setPassword] = useState();
+    const [error,  setError] = useState();
 
-    onChange = (event) =>{
-        const {name,value} = event.target;
-        this.setState({
-            [name]: value
-        })
+    // a hook function that will be executed if any effects occurs on the spesificed fields
+    useEffect(() => {
+        setError(undefined)
+    }, [username, password])
 
-    }
+    const onClickLogin = async event =>{
 
-    onClickLogin = async event =>{
-
-        this.setState({
-            error: null
-        })
+        setError(undefined)
 
         event.preventDefault();
+
         const creds = {
-            username: this.state.username,
-            password: this.state.password
+            username: username,
+            password: password
         }
 
         try {
             const response = await login(creds);
-            this.props.history.push("/");
+            props.history.push("/");
 
             const authState = {
-                username: this.state.username,
+                username: response.data.username,
                 displayName: response.data.displayName,
                 image: response.data.image,
-                password: this.state.password
+                password: password
             }
 
-            this.props.dispatch(loginSuccess(authState))
+            props.dispatch(loginSuccess(authState))
 
         } catch (error) {
-            this.setState({
-                    error: error.response.data.message
-                })
+            setError(error.response.data.message)
         }
     }
 
-    render(){
-        const { t, pendingApiCall } = this.props
-        const {username,password,error} = this.state
-        return(
-            <div className="container">
-                <form>
-                    <h1 className="text-center">{t("Login")}</h1>
-                    <Input type="text" name="username" label={t("Username")} onChange={this.onChange}/>
-                    <Input type="password" name="password" label={t("Password")} onChange={this.onChange}/>
-                    
-                    {/*  ? excepts : but && doesn't except any else conditions
-                    
-                        i could also use &&. In that case if this.state.error existed, it would
-                        write the message but else it wouldn't render anything
-                    
-                    */}
+    const { t, pendingApiCall } = props
+    return(
+        <div className="container">
+            <form>
+                <h1 className="text-center">{t("Login")}</h1>
+                <Input type="text" name="username" label={t("Username")} onChange={(event) => {setUsername(event.target.value)}} />
+                <Input type="password" name="password" label={t("Password")} onChange={(event) => {setPassword(event.target.value)}}/>
+                
+                {/*  ? excepts : but && doesn't except any else conditions
+                
+                    i could also use &&. In that case if this.state.error existed, it would
+                    write the message but else it wouldn't render anything
+                
+                */}
 
-                    {error ? 
-                    <div className="alert alert-danger mt-3">
-                    {error}
-                    </div>
-                    :
-                    <div></div>
-                    }
+                {error ? 
+                <div className="alert alert-danger mt-3">
+                {error}
+                </div>
+                :
+                <div></div>
+                }
 {/*                     <button className="btn btn-primary" disabled={!username || !password || pendingApiCall} onClick={this.onClickLogin}>
-                        {pendingApiCall &&
-                        <span className="spinner-border spinner-border-sm"></span>                    
-                        }
-                        {t("Login")}
-                    </button>*/}        
+                    {pendingApiCall &&
+                    <span className="spinner-border spinner-border-sm"></span>                    
+                    }
+                    {t("Login")}
+                </button>*/}        
 
-                    <ButtonWithProgress buttonText={t("Login")} onClickMethod={this.onClickLogin} pendingApiCall={pendingApiCall} disabledStatement={!username || !password || pendingApiCall} />
-                            
-                    </form>
-            </div>
-            
-        )
-    }
+                <ButtonWithProgress buttonText={t("Login")} onClickMethod={onClickLogin} pendingApiCall={pendingApiCall} disabledStatement={!username || !password || pendingApiCall} />
+                        
+                </form>
+        </div>
+        
+    )
+
 }
 
 const LoginPageWithTranslation = withTranslation()(UserLoginPage);
