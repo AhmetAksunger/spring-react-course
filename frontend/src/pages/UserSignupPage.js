@@ -1,10 +1,12 @@
 import React from "react";
-import {signup, changeLanguage} from "../api/apiCalls"
+import {signup, changeLanguage, login} from "../api/apiCalls"
 import Input from "../components/input"
 import { withTranslation } from "react-i18next"
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import LanguageSelector from "../components/LanguageSelector";
 import { withApiProgress } from "../shared/ApiProgress";
+import { connect } from "react-redux";
+import { loginSuccess } from "../redux/authActions";
 
 class UserSignupPage extends React.Component{
 
@@ -55,6 +57,25 @@ class UserSignupPage extends React.Component{
 
         try {
             const response = await signup(body)
+            console.log("signed up successfully");
+
+            const creds = {
+                username: body.username,
+                password: body.password
+            }
+
+            const loginResponse = await login(creds);
+
+            const authState = {
+                username: loginResponse.data.username,
+                displayName: loginResponse.data.displayName,
+                image: loginResponse.data.image,
+                password: body.password
+            }
+
+            this.props.dispatch(loginSuccess(authState))
+
+            this.props.history.push("/")
             
         } catch (error) {
             
@@ -115,4 +136,5 @@ class UserSignupPage extends React.Component{
 
 const UserSignupPageWithTranslation = withTranslation()(UserSignupPage)
 const UserSignupPageWithApiProgress = withApiProgress(UserSignupPageWithTranslation,"/api/1.0/users")
-export default UserSignupPageWithApiProgress;
+
+export default connect()(UserSignupPageWithApiProgress);

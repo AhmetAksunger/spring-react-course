@@ -18,7 +18,7 @@ export function withApiProgress(WrappedComponent,apiPath){
                 return request;
             })
     
-            this.resposneInterceptor = axios.interceptors.response.use((response) => {
+            this.responseInterceptor = axios.interceptors.response.use((response) => {
                 if(response.config.url === apiPath){
                     this.setState({
                         pendingApiCall: false
@@ -38,7 +38,7 @@ export function withApiProgress(WrappedComponent,apiPath){
     
         componentWillUnmount(){
             axios.interceptors.request.eject(this.requestInterceptor);
-            axios.interceptors.response.eject(this.resposneInterceptor);
+            axios.interceptors.response.eject(this.responseInterceptor);
             
         }
 
