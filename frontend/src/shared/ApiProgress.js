@@ -10,7 +10,7 @@ export function withApiProgress(WrappedComponent,apiPath){
       
         componentDidMount(){
             this.requestInterceptor = axios.interceptors.request.use((request) => {
-                if(request.url === apiPath){
+                if(request.url.startsWith(apiPath)){
                     this.setState({
                         pendingApiCall: true
                     })
@@ -19,7 +19,7 @@ export function withApiProgress(WrappedComponent,apiPath){
             })
     
             this.responseInterceptor = axios.interceptors.response.use((response) => {
-                if(response.config.url === apiPath){
+                if(response.config.url.startsWith(apiPath)){
                     this.setState({
                         pendingApiCall: false
                     })
@@ -27,7 +27,7 @@ export function withApiProgress(WrappedComponent,apiPath){
                 return response;
             }, (error) => {
     
-                if(error.config.url === apiPath){
+                if(error.config.url.startsWith(apiPath)){
                     this.setState({
                         pendingApiCall: false
                     })

@@ -10,5 +10,5 @@ public interface UserService {
 
 	void save (User user);
 	
-	Page<GetUsersResponse> getUsers(Pageable page);
+	Page<GetUsersResponse> getUsers(Pageable page, User user);
 }

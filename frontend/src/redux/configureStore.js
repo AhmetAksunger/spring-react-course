@@ -1,6 +1,7 @@
 import { legacy_createStore as createStore } from 'redux';
 import authReducer from './authReducer';
 import SecureLS from 'secure-ls';
+import { setAuthorizationHeader } from '../api/apiCalls';
 
 const secureLS = new SecureLS();
 
@@ -10,10 +11,10 @@ const getStateFromStorage = () => {
 
   let stateInLocalStorage = {
     isLoggedIn: false,
-    username: null,
-    displayName: null,
-    image: null,
-    password: null
+    username: undefined,
+    displayName: undefined,
+    image: undefined,
+    password: undefined
   }
 
   if(localAuthData){
@@ -36,6 +37,8 @@ const configureStore = () => {
   // each time the state changes, this method will run
   store.subscribe(() => {
     updateStateInStorage(store.getState());
+    setAuthorizationHeader(store.getState());
+
   })
 
   return store; 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Input from "../components/input"
 import { useTranslation } from "react-i18next"
-import { login } from "../api/apiCalls";
+import { login, setAuthorizationHeader } from "../api/apiCalls";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import { withApiProgress } from "../shared/ApiProgress";
 import { useDispatch } from "react-redux";

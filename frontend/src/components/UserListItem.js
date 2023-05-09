@@ -11,6 +11,7 @@ const UserListItem = (props) => {
         imageSource = image;
     }
 
+    const {pendingApiCall} = props;
     return (
         <div>
             <li class="list-group-item list-group-item-action">

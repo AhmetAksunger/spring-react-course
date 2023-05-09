@@ -38,9 +38,16 @@ public class UserManager implements UserService {
 	}
 
 	@Override
-	public Page<GetUsersResponse> getUsers(Pageable page) {
-	    Page<User> users = userRepository.findAll(page);
-	    return users.map(user -> mapperService.forResponse().map(user, GetUsersResponse.class));
+	public Page<GetUsersResponse> getUsers(Pageable page, User user) {
+	    Page<User> users;
+		
+		if (user == null) {
+	    	users = userRepository.findAll(page);	
+	    }
+	    else {
+	    	users = userRepository.findByUsernameNot(user.getUsername(),page);
+	    }
+	    return users.map(userInList -> mapperService.forResponse().map(userInList, GetUsersResponse.class));
 	}
 
 	

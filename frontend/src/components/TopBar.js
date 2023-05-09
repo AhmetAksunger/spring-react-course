@@ -4,6 +4,7 @@ import { useTranslation} from 'react-i18next';
 //import { Authentication } from '../shared/AuthenticationContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from '../redux/authActions';
+import { clearAuthorizationHeader } from "../api/apiCalls";
 
 const TopBar = (props) => {
 
@@ -18,6 +19,7 @@ const TopBar = (props) => {
 
     const onClickLogout = () => {
         dispatch(logoutSuccess())
+        clearAuthorizationHeader();
     }
 
     //const cannot be reassigned once assigned
