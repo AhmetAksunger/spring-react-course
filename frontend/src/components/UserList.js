@@ -1,75 +1,71 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getUsers } from '../api/apiCalls'
-import { withTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import UserListItem from './UserListItem'
 
-class UserList extends Component {
+const UserList=(props) => {
 
-    state = {
-        page: {
-            content: [],
-            size: 3,
-            number: 0
-        }
-    }
+    const {t} = useTranslation();
+    const [page, setPage] = useState({
+        content: [],
+        size: 3,
+        number: 0,
+        totalPages: 0
+    });
 
-    loadUsers = (pageNumber) => {
+    const loadUsers = (pageNumber) => {
         getUsers(pageNumber).then( (response) => {
-            this.setState({
-                page: response.data
-            })
+            setPage(response.data);
         })
     }
 
-    componentDidMount() {
-        this.loadUsers();
+    // if you give an empty error, it will act like componentdidmount
+    useEffect(() => {
+        loadUsers();
+    }, [])
+
+    const onClickNext = () => {
+        const nextPage = page.number + 1;
+        loadUsers(nextPage);
     }
 
-    onClickNext = () => {
-        const nextPage = this.state.page.number + 1;
-        this.loadUsers(nextPage);
-    }
-
-    onClickPrevious = () => {
-        const previousPage = this.state.page.number - 1;
-        this.loadUsers(previousPage);
+    const onClickPrevious = () => {
+        const previousPage = page.number - 1;
+        loadUsers(previousPage);
     }
     
-    onClickRaquo = () => {
-        const lastPage = this.state.page.totalPages - 1;
-        this.loadUsers(lastPage)
+    const onClickRaquo = () => {
+        const lastPage = page.totalPages - 1;
+        loadUsers(lastPage)
     }
 
-    onClickLaquo = () => {
+    const onClickLaquo = () => {
         const firstPage = 0;
-        this.loadUsers(0);
+        loadUsers(0);
     }
 
-    render() {
-        const {t} = this.props;
-        const {content: users, last, first} = this.state.page;
-        return (
-        <div>
-            <div className='card'>
-                <h3 className='card-header text-center'>{t("Users")}</h3>
-                <ul className="list-group">
-                {users.map((user,index) => {
-                    return (
-                        <UserListItem key={user.username} user={user} />
-                    )
-                })}
-            </ul>    
-            </div>
-            <div>
-                <button type='button' className='btn btn-light float-end' onClick={this.onClickRaquo} disabled={last}>&raquo;</button>
-                <button type='button' className='btn btn-light float-end' onClick={this.onClickNext} disabled={last}>{t("Next")}</button>
-                <button type='button' className='btn btn-light' onClick={this.onClickLaquo} disabled={first}>&laquo;</button>
-                <button type='button' className='btn btn-light' onClick={this.onClickPrevious} disabled={first}>{t("Previous")}</button>
-
-            </div>
+    const {content: users, last, first} = page;
+    return (
+    <div>
+        <div className='card'>
+            <h3 className='card-header text-center'>{t("Users")}</h3>
+            <ul className="list-group">
+            {users.map((user,index) => {
+                return (
+                    <UserListItem key={user.username} user={user} />
+                )
+            })}
+        </ul>    
         </div>
-        )
-    }
+        <div>
+            <button type='button' className='btn btn-light float-end' onClick={onClickRaquo} disabled={last}>&raquo;</button>
+            <button type='button' className='btn btn-light float-end' onClick={onClickNext} disabled={last}>{t("Next")}</button>
+            <button type='button' className='btn btn-light' onClick={onClickLaquo} disabled={first}>&laquo;</button>
+            <button type='button' className='btn btn-light' onClick={onClickPrevious} disabled={first}>{t("Previous")}</button>
+
+        </div>
+    </div>
+    )
 }
 
-export default withTranslation()(UserList)
+export default UserList;
