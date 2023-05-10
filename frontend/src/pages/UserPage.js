@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 const UserPage = (props) => {
 
-    const[user, setUser] = useState();
+    const[user, setUser] = useState({});
     const[notFound, setNotFound] = useState(false);
 
     const {username} = props.match.params;
@@ -42,7 +42,7 @@ const UserPage = (props) => {
             {t("User not found")}
             </div>
             : 
-            <ProfileCard />
+            <ProfileCard user={user}/>
             }
         </div>
     );
