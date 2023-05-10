@@ -11,4 +11,6 @@ public interface UserService {
 	void save (User user);
 	
 	Page<GetUsersResponse> getUsers(Pageable page, User user);
+
+	GetUsersResponse getByUsername(String username);
 }

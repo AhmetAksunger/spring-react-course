@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.hoexify.ws.dto.GetUsersResponse;
 import com.hoexify.ws.entity.User;
+import com.hoexify.ws.error.NotFoundException;
 import com.hoexify.ws.mapper.ModelMapperService;
 import com.hoexify.ws.repository.UserRepository;
 
@@ -48,6 +49,17 @@ public class UserManager implements UserService {
 	    	users = userRepository.findByUsernameNot(user.getUsername(),page);
 	    }
 	    return users.map(userInList -> mapperService.forResponse().map(userInList, GetUsersResponse.class));
+	}
+
+	@Override
+	public GetUsersResponse getByUsername(String username) {
+		User user = userRepository.findByUsername(username);
+		if(user == null) {
+			throw new NotFoundException();
+		}
+		
+		GetUsersResponse response = mapperService.forResponse().map(user, GetUsersResponse.class);
+		return response;
 	}
 
 	
