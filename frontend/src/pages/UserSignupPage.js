@@ -120,6 +120,6 @@ const UserSignupPage = (props) => {
 
 }
 
-const UserSignupPageWithApiProgress = withApiProgress(UserSignupPage,"/api/1.0/users")
+const UserSignupPageWithApiProgress = withApiProgress(UserSignupPage,"post","/api/1.0/users")
 
 export default UserSignupPageWithApiProgress;

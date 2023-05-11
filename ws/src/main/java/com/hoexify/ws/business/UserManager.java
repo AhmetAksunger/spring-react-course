@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hoexify.ws.dto.GetUsersResponse;
+import com.hoexify.ws.dto.UserUpdateRequest;
 import com.hoexify.ws.entity.User;
 import com.hoexify.ws.error.NotFoundException;
 import com.hoexify.ws.mapper.ModelMapperService;
@@ -60,6 +61,19 @@ public class UserManager implements UserService {
 		
 		GetUsersResponse response = mapperService.forResponse().map(user, GetUsersResponse.class);
 		return response;
+	}
+
+	@Override
+	public GetUsersResponse update(UserUpdateRequest updateRequest, String username) {
+		
+		User user = userRepository.findByUsername(username);
+		user.setDisplayName(updateRequest.getDisplayName());
+		
+		user = userRepository.save(user);
+		
+		GetUsersResponse response = mapperService.forResponse().map(user, GetUsersResponse.class);
+		return response;
+		
 	}
 
 	

@@ -90,6 +90,6 @@ const UserLoginPage = (props) => {
 
 }
 
-const LoginPageWithApiProgress = withApiProgress(UserLoginPage,"/api/1.0/auth");
+const LoginPageWithApiProgress = withApiProgress(UserLoginPage,"post","/api/1.0/auth");
 
 export default LoginPageWithApiProgress;

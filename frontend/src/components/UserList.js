@@ -3,6 +3,7 @@ import { getUsers } from '../api/apiCalls'
 import { useTranslation } from 'react-i18next'
 import UserListItem from './UserListItem'
 import { withApiProgress } from '../shared/ApiProgress'
+import Spinner from './Spinner'
 
 const UserList=(props) => {
 
@@ -66,9 +67,7 @@ const UserList=(props) => {
             })}
             </ul> 
             :
-            <div class="d-flex justify-content-center">
-                <span class="spinner-border mt-3" role="status" />
-            </div>
+            <Spinner />
             }
 
             {loadFailure && <div className='text-center text-danger'> {t("Failure")} </div>}
@@ -84,4 +83,4 @@ const UserList=(props) => {
     )
 }
 
-export default withApiProgress(UserList, "/api/1.0/users");
+export default withApiProgress(UserList, "get","/api/1.0/users");

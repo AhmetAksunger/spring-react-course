@@ -1,16 +1,62 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import axios from 'axios'
 
-export function withApiProgress(WrappedComponent,apiPath){
+export const useApiProgress = (apiMethod, apiPath) => {
+    const [pendingApiCall, setPendingAPiCall] = useState(false);
+
+    useEffect(() => {
+        let requestInterceptor,responseInterceptor = undefined;
+        const registerInterceptors = () => {
+            requestInterceptor = axios.interceptors.request.use((request) => {
+                if(request.url.startsWith(apiPath) && request.method === apiMethod ){
+                    setPendingAPiCall(true);
+                }
+                return request;
+            })
+    
+            responseInterceptor = axios.interceptors.response.use((response) => {
+                if(response.config.url.startsWith(apiPath) && response.config.method === apiMethod){
+                    setPendingAPiCall(false);
+
+                }
+                return response;
+            }, (error) => {
+    
+                if(error.config.url.startsWith(apiPath)){
+                    setPendingAPiCall(false);
+
+                }
+                throw error;
+            })
+        }
+
+        registerInterceptors();
+
+        
+        const unregisterInterceptors = () => {
+            axios.interceptors.request.eject(requestInterceptor);
+            axios.interceptors.response.eject(responseInterceptor);
+            
+        }
+
+        return function unmount() {
+            unregisterInterceptors();
+        }
+    },[apiPath, apiMethod])
+
+    return pendingApiCall;
+}
+
+export function withApiProgress(WrappedComponent,apiMethod,apiPath){
     return class extends Component {
   
         state = {
             pendingApiCall: false
         }
       
-        componentDidMount(){
+        registerInterceptors = () => {
             this.requestInterceptor = axios.interceptors.request.use((request) => {
-                if(request.url.startsWith(apiPath)){
+                if(request.url.startsWith(apiPath) && request.method === apiMethod){
                     this.setState({
                         pendingApiCall: true
                     })
@@ -19,7 +65,7 @@ export function withApiProgress(WrappedComponent,apiPath){
             })
     
             this.responseInterceptor = axios.interceptors.response.use((response) => {
-                if(response.config.url.startsWith(apiPath)){
+                if(response.config.url.startsWith(apiPath) && response.config.method === apiMethod){
                     this.setState({
                         pendingApiCall: false
                     })
@@ -35,11 +81,19 @@ export function withApiProgress(WrappedComponent,apiPath){
                 throw error;
             })
         }
-    
-        componentWillUnmount(){
+
+        unregisterInterceptors = () => {
             axios.interceptors.request.eject(this.requestInterceptor);
             axios.interceptors.response.eject(this.responseInterceptor);
             
+        }
+
+        componentDidMount(){
+            this.registerInterceptors();
+        }
+    
+        componentWillUnmount(){
+            this.unregisterInterceptors();
         }
 
         render() {
