@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserUpdateRequest {
 	
-	String displayName;
-
+	private String displayName;
+	private String image;
 }

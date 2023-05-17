@@ -1,6 +1,11 @@
 package com.hoexify.ws.business;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +20,7 @@ import com.hoexify.ws.dto.GetUsersResponse;
 import com.hoexify.ws.dto.UserUpdateRequest;
 import com.hoexify.ws.entity.User;
 import com.hoexify.ws.error.NotFoundException;
+import com.hoexify.ws.file.FileService;
 import com.hoexify.ws.mapper.ModelMapperService;
 import com.hoexify.ws.repository.UserRepository;
 
@@ -29,6 +35,9 @@ public class UserManager implements UserService {
 	
 	@Autowired
 	private ModelMapperService mapperService;
+	
+	@Autowired
+	private FileService fileService;
 	
 	@Override
 	public void save(User user) {
@@ -67,7 +76,21 @@ public class UserManager implements UserService {
 	public GetUsersResponse update(UserUpdateRequest updateRequest, String username) {
 		
 		User user = userRepository.findByUsername(username);
-		user.setDisplayName(updateRequest.getDisplayName());
+		if(updateRequest.getDisplayName() != null){
+			user.setDisplayName(updateRequest.getDisplayName());	
+		}
+		if(updateRequest.getImage() != null) {
+			String oldImageName = user.getImage();
+			fileService.deleteFile(oldImageName);
+			try {
+				String storedFileName = fileService.writeBase64EncodedStringToFile(updateRequest.getImage());
+				user.setImage(storedFileName);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		}
 		
 		user = userRepository.save(user);
 		
@@ -76,6 +99,4 @@ public class UserManager implements UserService {
 		
 	}
 
-	
-	
 }

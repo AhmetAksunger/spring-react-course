@@ -14,6 +14,7 @@ const ProfileCard = (props) => {
     const [inEditMode,setInEditMode] = useState(false);
     const [updatedDisplayName,setUpdatedDisplayName] = useState();
     const [user,setUser] = useState({...props.user});
+    const [newImage,setNewImage] = useState();
 
     const {username, displayName, image} = user;
 
@@ -30,14 +31,23 @@ const ProfileCard = (props) => {
 
     const pathUsername = routeParams.username;
 
+    const editable = pathUsername === loggedInUsername;
+
     const onClickSave = async () => {
-        console.log(updatedDisplayName);
+
+        let image;
+        if (newImage){
+            image = newImage.split(",")[1];
+        }
+
         const body = {
-            displayName: updatedDisplayName
+            displayName: updatedDisplayName,
+            image: image
         };
 
         try {
             const response = await updateUser(username,body);
+            console.log(response);
             setUser(response.data);
             setInEditMode(false);
         } catch (error) {
@@ -48,25 +58,41 @@ const ProfileCard = (props) => {
 
     const onClickCancel = () => {
         setInEditMode(false);
-        setUpdatedDisplayName(displayName)
+        setUpdatedDisplayName(displayName);
+        setNewImage(undefined);
+    }
+
+
+    const onChangeFile = (event) => {
+        if(event.target.files.length < 1){
+            return;
+        }
+        const file = event.target.files[0];
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+            setNewImage(fileReader.result);
+        }
+        fileReader.readAsDataURL(file);
     }
 
     return (
         <div class="card">
             <div className='card-header text-center'>
-                <ProfileImageWithDefault image={image} width="256" />
+                <ProfileImageWithDefault image={image} tempImage={newImage} width="256" 
+                />
             </div>
             <div class="card-body text-center">
                 {!inEditMode &&
                 <>
                 <h5 class="card-title">{displayName}@{username}</h5>
-
-                <button className='btn btn-success' onClick={() => setInEditMode(true)}>
+                
+                {editable &&
+                    <button className='btn btn-success' onClick={() => setInEditMode(true)}>
                     <span class="material-symbols-outlined me-1 d-inline-flex" style={{fontSize:16}}>
                     edit
                     </span>
                     {t("Edit")}
-                </button>
+                </button>}
                 </>                
                 }
                 
@@ -74,7 +100,12 @@ const ProfileCard = (props) => {
                 <div>
                     <Input label={t("Edit Display Name")} name="edit" type="text" defaultValue={displayName} onChange={(event) => setUpdatedDisplayName(event.target.value)}/>
                     
-                    {/* Submit Button */}
+                    <div class="mb-3">
+                    <label for="formFile" class="form-label">{t("Choose Profile Picture")}</label>
+                    <input class="form-control" type="file" onChange={onChangeFile}/>
+                    </div>
+
+                    {/* Save Button */}
                     <ButtonWithProgress className='btn btn-success d-inline-flex mt-2' onClickMethod={onClickSave} pendingApiCall={pendingApiCall} disabledStatement={pendingApiCall}
                     buttonText={
                         <>
