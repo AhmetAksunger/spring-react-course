@@ -22,7 +22,8 @@ i18n.use(initReactI18next).init({
                 "Save":"Save",
                 "Cancel":"Cancel",
                 "Edit Display Name":"Edit Display Name",
-                "Choose Profile Picture": "Choose Profile Picture"
+                "Choose Profile Picture": "Choose Profile Picture",
+                "My Profile": "My Profile"
             }
         },
         tr: {
@@ -44,7 +45,8 @@ i18n.use(initReactI18next).init({
                 "Save":"Kaydet",
                 "Cancel":"İptal et",
                 "Edit Display Name":"Gösterilecek İsmi Düzenle",
-                "Choose Profile Picture": "Profil Resmi Yükle"
+                "Choose Profile Picture": "Profil Resmi Yükle",
+                "My Profile": "Profilim"
             }
         }
     },

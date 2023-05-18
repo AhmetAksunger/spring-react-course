@@ -4,7 +4,7 @@ import defaultProfileLogo from "../assets/profile.png"
 
 const ProfileImageWithDefault = (props) => {
     
-    const {image, width, tempImage} = props
+    const {image, width, tempImage, height} = props
 
     let imageSource = defaultProfileLogo;
 
@@ -13,7 +13,7 @@ const ProfileImageWithDefault = (props) => {
     }
     
     return (
-        <img className='rounded-circle shadow' src={tempImage || imageSource} width={width} onError={(event) => {event.target.src=defaultProfileLogo}}/>
+        <img className='rounded-circle shadow' src={tempImage || imageSource} width={width} height={height} onError={(event) => {event.target.src=defaultProfileLogo}}/>
     );
 };
 

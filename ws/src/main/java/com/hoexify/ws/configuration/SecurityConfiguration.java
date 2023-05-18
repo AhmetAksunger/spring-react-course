@@ -33,6 +33,8 @@ public class SecurityConfiguration {
 	  @Bean
 	  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		  
+		  http.headers().frameOptions().disable();
+		  
 		  http.httpBasic().authenticationEntryPoint(new AuthenticationEntryPoint() {
 			
 			@Override

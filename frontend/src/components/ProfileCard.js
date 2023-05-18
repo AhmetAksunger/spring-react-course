@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom/cjs/react-router-dom';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import Input from './input';
 import { updateUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
+import { updateSuccess } from '../redux/authActions';
 //import { Authentication } from '../shared/AuthenticationContext';
 
 const ProfileCard = (props) => {
@@ -15,9 +16,10 @@ const ProfileCard = (props) => {
     const [updatedDisplayName,setUpdatedDisplayName] = useState();
     const [user,setUser] = useState({...props.user});
     const [newImage,setNewImage] = useState();
+    const [errors,setErrors] = useState({});
 
     const {username, displayName, image} = user;
-
+    const dispatch = useDispatch();
 
     const routeParams = useParams();
     const {t} = useTranslation();
@@ -32,6 +34,9 @@ const ProfileCard = (props) => {
     const pathUsername = routeParams.username;
 
     const editable = pathUsername === loggedInUsername;
+
+    useEffect(() => {setErrors({})}, [updatedDisplayName,newImage])
+
 
     const onClickSave = async () => {
 
@@ -50,8 +55,11 @@ const ProfileCard = (props) => {
             console.log(response);
             setUser(response.data);
             setInEditMode(false);
+
+            dispatch(updateSuccess(response.data));
         } catch (error) {
             console.log(error)
+            setErrors(error.response.data.validationErrors)
         }
     
     }
@@ -98,11 +106,11 @@ const ProfileCard = (props) => {
                 
                 {inEditMode &&
                 <div>
-                    <Input label={t("Edit Display Name")} name="edit" type="text" defaultValue={displayName} onChange={(event) => setUpdatedDisplayName(event.target.value)}/>
+                    <Input label={t("Edit Display Name")} name="edit" type="text" error={errors.displayName} defaultValue={displayName} onChange={(event) => setUpdatedDisplayName(event.target.value)}/>
                     
                     <div class="mb-3">
                     <label for="formFile" class="form-label">{t("Choose Profile Picture")}</label>
-                    <input class="form-control" type="file" onChange={onChangeFile}/>
+                    <Input type="file" onChange={onChangeFile} error={errors.image}/>
                     </div>
 
                     {/* Save Button */}

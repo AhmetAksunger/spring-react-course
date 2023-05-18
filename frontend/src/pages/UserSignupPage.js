@@ -81,11 +81,10 @@ const UserSignupPage = (props) => {
             props.history.push("/")
             
         } catch (error) {
-            console.log(error)
             if(error.response.data.validationErrors != null){
                 setErrors(error.response.data.validationErrors)
             }
-            
+            console.log(error.response.data.validationErrors)            
         }
         
         

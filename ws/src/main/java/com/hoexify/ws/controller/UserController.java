@@ -53,7 +53,7 @@ public class UserController {
 	
 	@PutMapping("/users/{username}")
 	@PreAuthorize("#username == principal.username")
-	public ResponseEntity<?> update(@RequestBody UserUpdateRequest userUpdateRequest, @PathVariable String username) {
+	public ResponseEntity<?> update(@Valid @RequestBody UserUpdateRequest userUpdateRequest, @PathVariable String username) {
 
 		return ResponseEntity.ok(userService.update(userUpdateRequest, username));
 	}

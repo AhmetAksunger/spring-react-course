@@ -17,3 +17,15 @@ export const loginSuccess = (authState) => {
 
     return action;
 }
+
+export const updateSuccess = ({displayName, image}) => {
+    const action = {
+        type: ACTIONS.UPDATE_SUCCESS,
+        data: {
+            displayName: displayName,
+            image: image
+        }
+    }
+
+    return action;
+}
