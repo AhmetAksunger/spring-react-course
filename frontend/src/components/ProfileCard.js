@@ -13,13 +13,15 @@ import { updateSuccess } from '../redux/authActions';
 const ProfileCard = (props) => {
 
     const [inEditMode,setInEditMode] = useState(false);
-    const [updatedDisplayName,setUpdatedDisplayName] = useState();
     const [user,setUser] = useState({...props.user});
     const [newImage,setNewImage] = useState();
     const [errors,setErrors] = useState({});
 
     const {username, displayName, image} = user;
     const dispatch = useDispatch();
+
+    const [updatedDisplayName,setUpdatedDisplayName] = useState(displayName);
+
 
     const routeParams = useParams();
     const {t} = useTranslation();

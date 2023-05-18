@@ -10,6 +10,8 @@ import com.hoexify.ws.business.HoaxService;
 import com.hoexify.ws.dto.CreateHoaxRequest;
 import com.hoexify.ws.dto.HoaxResponse;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/1.0/hoaxes")
 public class HoaxController {
@@ -18,7 +20,7 @@ public class HoaxController {
 	private HoaxService hoaxService;
 	
 	@PostMapping()
-	public HoaxResponse createHoax(@RequestBody CreateHoaxRequest createHoaxRequest) {
+	public HoaxResponse createHoax(@Valid @RequestBody CreateHoaxRequest createHoaxRequest) {
 		return hoaxService.create(createHoaxRequest);
 	}
 }

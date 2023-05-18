@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { postHoax } from '../api/apiCalls';
+import { useApiProgress } from '../shared/ApiProgress';
+import ButtonWithProgress from './ButtonWithProgress';
 
 const HoaxifySection = (props) => {
 
@@ -11,8 +13,11 @@ const HoaxifySection = (props) => {
         }
     })
 
+    const pendingApiCall = useApiProgress("post","/api/1.0/hoaxes");
+
     const [showButtons,setShowButtons] = useState(false);
     const [hoax,setHoax] = useState("");
+    const [errors,setErrors] = useState({});
 
     const onClickTextArea = () => {
         setShowButtons(true);
@@ -20,6 +25,7 @@ const HoaxifySection = (props) => {
 
     const onChangeTextArea = (event) => {
         setHoax(event.target.value)
+        setErrors({})
     }
 
     const onClickCancel = () => {
@@ -34,7 +40,7 @@ const HoaxifySection = (props) => {
         try {
             const response = await postHoax(body);
         } catch (error) {
-            
+            setErrors(error.response.data.validationErrors);
         }
 
     }
@@ -48,12 +54,15 @@ const HoaxifySection = (props) => {
                 <div className='col'>
                     <form>
                         <div class="form-group">
-                            <textarea class="form-control mt-2 mb-2" rows={showButtons ? "5" : "2"} onClick={onClickTextArea} onChange={onChangeTextArea} value={hoax}></textarea>
+                            <textarea class={errors.content ? "form-control mt-2 mb-2 is-invalid" : "form-control mt-2 mb-2"} rows={showButtons ? "5" : "2"} onClick={onClickTextArea} onChange={onChangeTextArea} value={hoax}></textarea>
+                            <div className="invalid-feedback">
+                            {errors.content}
+                            </div>
                         </div>
                         {showButtons &&
                         <div className='mt-2 mb-2 text-end'>
-                            <button className='btn btn-primary' onClick={onClickHoaxify}>Hoaxify</button>
-                            <button className='btn btn-danger ms-1 me-2' onClick={onClickCancel}>Cancel</button>
+                            <ButtonWithProgress className='btn btn-primary' buttonText="Hoaxify" onClickMethod={onClickHoaxify} pendingApiCall={pendingApiCall} disabledStatement={pendingApiCall}/>
+                            <button disabled={pendingApiCall} className='btn btn-danger ms-1 me-2' onClick={onClickCancel}>Cancel</button>
                         </div>
                         }
                     </form>

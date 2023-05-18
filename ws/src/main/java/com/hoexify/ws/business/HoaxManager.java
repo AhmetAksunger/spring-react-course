@@ -1,5 +1,7 @@
 package com.hoexify.ws.business;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,7 @@ public class HoaxManager implements HoaxService{
 	public HoaxResponse create(CreateHoaxRequest createHoaxRequest) {
 		Hoax hoax = new Hoax();
 		hoax.setContent(createHoaxRequest.getContent());
-		hoax.setTimeStamp(System.currentTimeMillis());
+		hoax.setTimeStamp(new Date());
 		hoax = hoaxRepository.save(hoax);
 		HoaxResponse response = mapperService.forResponse().map(hoax, HoaxResponse.class);
 		return response;

@@ -1,5 +1,8 @@
 package com.hoexify.ws.entity;
 
+import java.util.Date;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,9 +24,9 @@ public class Hoax {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Size(min = 5)
+	@Column(length = 1000)
 	private String content;
 	
-	private long timeStamp;
+	private Date timeStamp;
 	
 }
