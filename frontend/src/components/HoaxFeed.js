@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getHoaxes } from '../api/apiCalls';
 import HoaxListItem from './HoaxListItem';
 import { useTranslation } from 'react-i18next';
+import { useApiProgress } from '../shared/ApiProgress';
+import ButtonWithProgress from './ButtonWithProgress';
 
 const HoaxFeed = () => {
 
@@ -9,18 +11,25 @@ const HoaxFeed = () => {
         content: [],
         size: 5,
         number: 0,
-        totalPages: 0
+        totalPages: 0,
+        last: false
     });
 
     const {t} = useTranslation();
+    const pendingApiCall = useApiProgress("get","/api/1.0/hoaxes");
 
     useEffect(() => {
         loadHoaxes();
     },[]);
 
     const loadHoaxes = async (sizeNumber) => {
-        const response = await getHoaxes(0,sizeNumber);
-        setPage(response.data);    
+        
+        try {
+            const response = await getHoaxes(0,sizeNumber);
+            setPage(response.data);    
+        } catch (error) {
+            
+        }    
     }
 
     const onClickLoadHoaxes = () => {
@@ -28,7 +37,7 @@ const HoaxFeed = () => {
         loadHoaxes(nextHoaxes);
     }
 
-    const {content: hoaxes} = page;
+    const {content: hoaxes, last} = page;
 
     if(hoaxes.length === 0){
         return(
@@ -44,12 +53,12 @@ const HoaxFeed = () => {
                 const {content: hoaxContent, timeStamp} = value;
                 return (
                     <div>
-                        <HoaxListItem content={hoaxContent} timeStamp={timeStamp} />
+                        <HoaxListItem key={index} content={hoaxContent} timeStamp={timeStamp} />
                     </div>
                 )
             })}
             <div className='text-center mt-2'>
-                <button className='btn btn-primary' onClick={onClickLoadHoaxes}>{t("Load Hoaxes")}</button>
+                <ButtonWithProgress buttonText={t("Load Hoaxes")} className='btn btn-primary' onClickMethod={onClickLoadHoaxes} pendingApiCall={pendingApiCall} disabledStatement={pendingApiCall || last} />
             </div>
         </div>
     );
