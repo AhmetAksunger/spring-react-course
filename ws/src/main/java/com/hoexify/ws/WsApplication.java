@@ -6,7 +6,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.hoexify.ws.business.HoaxService;
 import com.hoexify.ws.business.UserService;
+import com.hoexify.ws.dto.CreateHoaxRequest;
+import com.hoexify.ws.entity.Hoax;
 import com.hoexify.ws.entity.User;
 
 @SpringBootApplication()
@@ -17,7 +20,7 @@ public class WsApplication {
 	}
 
 	@Bean
-	CommandLineRunner createInitialUsers(UserService userService) {
+	CommandLineRunner createInitialUsers(UserService userService, HoaxService hoaxService) {
 		return new CommandLineRunner() {
 			
 			@Override
@@ -31,6 +34,14 @@ public class WsApplication {
 					user.setPassword("P4ssword");
 					userService.save(user);
 					
+				}
+				
+				for (int i = 1; i <= 25; i++) {
+					
+					CreateHoaxRequest hoax = new CreateHoaxRequest();
+					hoax.setContent("hoax" + i);
+					
+					hoaxService.create(hoax);
 				}
 				
 			}

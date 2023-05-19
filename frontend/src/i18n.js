@@ -23,7 +23,9 @@ i18n.use(initReactI18next).init({
                 "Cancel":"Cancel",
                 "Edit Display Name":"Edit Display Name",
                 "Choose Profile Picture": "Choose Profile Picture",
-                "My Profile": "My Profile"
+                "My Profile": "My Profile",
+                "There are no hoaxes": "There are no hoaxes",
+                "Load Hoaxes": "Load Hoaxe"
             }
         },
         tr: {
@@ -46,7 +48,9 @@ i18n.use(initReactI18next).init({
                 "Cancel":"İptal et",
                 "Edit Display Name":"Gösterilecek İsmi Düzenle",
                 "Choose Profile Picture": "Profil Resmi Yükle",
-                "My Profile": "Profilim"
+                "My Profile": "Profilim",
+                "There are no hoaxes": "Herhangi bir hoax yok",
+                "Load Hoaxes": "Hoaxları yükle"
             }
         }
     },
