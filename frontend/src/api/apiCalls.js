@@ -40,6 +40,11 @@ export const postHoax = (hoax) => {
     return axios.post("/api/1.0/hoaxes",hoax);
 }
 
-export const getHoaxes = (page = 0, size = 5) => {
+export const getHoaxes = (username = undefined, page = 0, size = 5) => {
+
+    if(username !== undefined){
+        return axios.get(`/api/1.0/users/${username}/hoaxes?page=${page}&size=${size}`);
+    }
     return axios.get(`/api/1.0/hoaxes?page=${page}&size=${size}`);
+
 }

@@ -25,7 +25,7 @@ const HoaxFeed = () => {
     const loadHoaxes = async (sizeNumber) => {
         
         try {
-            const response = await getHoaxes(0,sizeNumber);
+            const response = await getHoaxes(undefined,0,sizeNumber);
             setPage(response.data);    
         } catch (error) {
             
@@ -50,10 +50,10 @@ const HoaxFeed = () => {
     return (
         <div>
             {hoaxes.map((value,index) => {
-                const {content: hoaxContent, timeStamp} = value;
+                const {content: hoaxContent, timeStamp, user} = value;
                 return (
                     <div>
-                        <HoaxListItem key={index} content={hoaxContent} timeStamp={timeStamp} />
+                        <HoaxListItem key={index} content={hoaxContent} timeStamp={timeStamp} user={user}/>
                     </div>
                 )
             })}

@@ -52,7 +52,6 @@ public class User implements UserDetails{
 	@Lob
 	private String image;
 
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub

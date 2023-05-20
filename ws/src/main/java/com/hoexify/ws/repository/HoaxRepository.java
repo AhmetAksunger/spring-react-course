@@ -9,4 +9,6 @@ import com.hoexify.ws.entity.Hoax;
 public interface HoaxRepository extends JpaRepository<Hoax, Long>{
 
 	Page<Hoax> findAllByOrderByTimeStampDesc(Pageable page);
+	
+	Page<Hoax> findAllByUserUsernameOrderByTimeStampDesc(String username,Pageable page);
 }

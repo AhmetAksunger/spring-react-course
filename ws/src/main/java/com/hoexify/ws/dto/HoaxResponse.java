@@ -14,5 +14,7 @@ public class HoaxResponse {
 	private String content;
 	
 	private Date timeStamp;
+		
+	private GetUsersResponse user;
 	
 }

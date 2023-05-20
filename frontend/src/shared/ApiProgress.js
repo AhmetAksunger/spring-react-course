@@ -1,14 +1,18 @@
 import React, { Component, useEffect, useState } from 'react'
 import axios from 'axios'
 
-export const useApiProgress = (apiMethod, apiPath) => {
+export const useApiProgress = (apiMethod, apiPath, strictPath = false) => {
     const [pendingApiCall, setPendingAPiCall] = useState(false);
 
     useEffect(() => {
         let requestInterceptor,responseInterceptor = undefined;
         const registerInterceptors = () => {
             requestInterceptor = axios.interceptors.request.use((request) => {
-                if(request.url.startsWith(apiPath) && request.method === apiMethod ){
+
+                if(strictPath && apiPath === request.url && request.method === apiMethod){
+                    setPendingAPiCall(true);
+                }
+                else if(!strictPath && request.url.startsWith(apiPath) && request.method === apiMethod){
                     setPendingAPiCall(true);
                 }
                 return request;

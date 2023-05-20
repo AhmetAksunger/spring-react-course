@@ -34,14 +34,14 @@ public class WsApplication {
 					user.setPassword("P4ssword");
 					userService.save(user);
 					
-				}
-				
-				for (int i = 1; i <= 25; i++) {
 					
-					CreateHoaxRequest hoax = new CreateHoaxRequest();
-					hoax.setContent("hoax" + i);
+					for(int j = 1; j<=2; j++) {
+						CreateHoaxRequest hoax = new CreateHoaxRequest();
+						hoax.setContent("hoax" + j + " " + user.getDisplayName());
+						hoaxService.create(hoax, user);
+					}
 					
-					hoaxService.create(hoax);
+					
 				}
 				
 			}
