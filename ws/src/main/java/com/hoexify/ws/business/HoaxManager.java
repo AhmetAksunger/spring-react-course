@@ -1,18 +1,16 @@
 package com.hoexify.ws.business;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.hoexify.ws.dto.CreateHoaxRequest;
 import com.hoexify.ws.dto.GetHoaxesResponse;
-import com.hoexify.ws.dto.GetUsersResponse;
 import com.hoexify.ws.dto.HoaxResponse;
 import com.hoexify.ws.entity.Hoax;
 import com.hoexify.ws.entity.User;
@@ -62,6 +60,37 @@ public class HoaxManager implements HoaxService{
 		
 		Page<Hoax> hoaxes = hoaxRepository.findAllByUserUsernameOrderByTimeStampDesc(username, page);
 		return hoaxes.map(hoaxe -> mapperService.forResponse().map(hoaxe, GetHoaxesResponse.class));
+	}
+
+	@Override
+	public Page<GetHoaxesResponse> getOldHoaxes(Pageable page,long id, String direction) {
+
+		if(direction.equals("before")) {
+			Page<Hoax> hoaxes = hoaxRepository.findByIdLessThanEqualOrderByTimeStampDesc(id, page);
+			return hoaxes.map(hoaxe -> mapperService.forResponse().map(hoaxe, GetHoaxesResponse.class));	
+		}
+		
+		throw new NotFoundException();
+	}
+
+	@Override
+	public Page<GetHoaxesResponse> getUserOldHoaxes(Pageable page, long id, String username, String direction) {
+		
+		if(direction.equals("before")) {
+			Page<Hoax> hoaxes = hoaxRepository.findByIdLessThanEqualAndUserUsernameOrderByTimeStampDesc(id,username,page);
+			return hoaxes.map(hoaxe -> mapperService.forResponse().map(hoaxe, GetHoaxesResponse.class));	
+		}
+		
+		throw new NotFoundException();
+	}
+	
+	@Override
+	public Map<String, Long> getNewHoaxesCount(long id){
+		long newHoaxesCount = hoaxRepository.countByIdGreaterThan(id);
+		
+		Map<String, Long> response = new HashMap<>();
+		response.put("count", newHoaxesCount);
+		return response;
 	}
 
 }

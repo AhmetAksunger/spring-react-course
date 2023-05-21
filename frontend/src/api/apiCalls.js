@@ -48,3 +48,14 @@ export const getHoaxes = (username = undefined, page = 0, size = 5) => {
     return axios.get(`/api/1.0/hoaxes?page=${page}&size=${size}`);
 
 }
+
+export const getOldHoaxes = (id,page = 0, size = 5,username = undefined) => {
+    if(username !== undefined){
+        return axios.get(`/api/1.0/users/${username}/hoaxes/${id}?direction=before&page=${page}&size=${size}`);
+    }
+    return axios.get(`/api/1.0/hoaxes/${id}?direction=before&page=${page}&size=${size}`);
+} 
+
+export const getNewHoaxesCount = (id) => {
+    return axios.get(`/api/1.0/hoaxes/count/${id}`)
+}

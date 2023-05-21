@@ -26,7 +26,8 @@ i18n.use(initReactI18next).init({
                 "Choose Profile Picture": "Choose Profile Picture",
                 "My Profile": "My Profile",
                 "There are no hoaxes": "There are no hoaxes",
-                "Load Hoaxes": "Load Hoaxe"
+                "Load Old Hoaxes": "Load Old Hoaxes",
+                "There are some new hoaxes": "There are some new hoaxes"
             }
         },
         tr: {
@@ -51,7 +52,8 @@ i18n.use(initReactI18next).init({
                 "Choose Profile Picture": "Profil Resmi Yükle",
                 "My Profile": "Profilim",
                 "There are no hoaxes": "Herhangi bir hoax yok",
-                "Load Hoaxes": "Hoaxları yükle"
+                "Load Old Hoaxes": "Eski Hoaxları yükle",
+                "There are some new hoaxes": "Yeni hoaxlar var"
             }
         }
     },

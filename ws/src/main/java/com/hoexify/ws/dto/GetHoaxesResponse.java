@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetHoaxesResponse {
 
+	private int id;
+	
 	private String content;
 	
 	private Date timeStamp;

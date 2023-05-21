@@ -11,4 +11,10 @@ public interface HoaxRepository extends JpaRepository<Hoax, Long>{
 	Page<Hoax> findAllByOrderByTimeStampDesc(Pageable page);
 	
 	Page<Hoax> findAllByUserUsernameOrderByTimeStampDesc(String username,Pageable page);
+	
+	Page<Hoax> findByIdLessThanEqualOrderByTimeStampDesc(long id, Pageable page);
+	
+	Page<Hoax> findByIdLessThanEqualAndUserUsernameOrderByTimeStampDesc(long id, String username, Pageable page);
+
+	long countByIdGreaterThan(long id);
 }

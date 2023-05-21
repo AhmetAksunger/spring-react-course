@@ -5,11 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hoexify.ws.business.HoaxService;
@@ -44,4 +46,24 @@ public class HoaxController {
 	public Page<GetHoaxesResponse> getUserHoaxes(Pageable page, @PathVariable String username){
 		return hoaxService.getUserHoaxes(page,username);
 	}
+	
+	@GetMapping("/hoaxes/{id}")
+	public Page<GetHoaxesResponse> getOldHoaxes(Pageable page,@PathVariable long id, @RequestParam(required = false, defaultValue = "before") String direction){
+		
+		return hoaxService.getOldHoaxes(page,id,direction);
+	}
+	
+	@GetMapping("/hoaxes/count/{id}")
+	public ResponseEntity<?> getNewHoaxesCount(@PathVariable long id){
+		
+		return ResponseEntity.ok(hoaxService.getNewHoaxesCount(id));
+	}
+	
+	@GetMapping("/users/{username}/hoaxes/{id}")
+	public Page<GetHoaxesResponse> getUserOldHoaxes(Pageable page,@PathVariable long id, @PathVariable String username ,@RequestParam(required = true) String direction){
+		
+		return hoaxService.getUserOldHoaxes(page,id,username,direction);
+	}
+	
+	
 }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateHoaxRequest {
 
-	@Size(min = 5, max = 1000)
+	@Size(min = 1, max = 1000)
 	private String content;
 }

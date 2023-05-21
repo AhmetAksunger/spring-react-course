@@ -39,6 +39,8 @@ const HoaxifySection = (props) => {
         };
         try {
             const response = await postHoax(body);
+            setHoax("")
+            
         } catch (error) {
             setErrors(error.response.data.validationErrors);
         }
