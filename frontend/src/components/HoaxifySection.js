@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
-import { postHoax } from '../api/apiCalls';
+import { postHoax, postHoaxAttachment } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
+import Input from './input';
+import AutoImageUpload from './AutoImageUpload';
 
 const HoaxifySection = (props) => {
 
@@ -14,10 +16,12 @@ const HoaxifySection = (props) => {
     })
 
     const pendingApiCall = useApiProgress("post","/api/1.0/hoaxes");
-
+    const pendingApiCallForImage = useApiProgress("post","/api/1.0/hoax-attachments",true);
+    
     const [showButtons,setShowButtons] = useState(false);
     const [hoax,setHoax] = useState("");
     const [errors,setErrors] = useState({});
+    const [newImage, setNewImage] = useState();
 
     const onClickTextArea = () => {
         setShowButtons(true);
@@ -31,6 +35,7 @@ const HoaxifySection = (props) => {
     const onClickCancel = () => {
         setHoax("")
         setShowButtons(false)
+        setNewImage(undefined)
     }
 
     const onClickHoaxify = async () => {
@@ -45,6 +50,26 @@ const HoaxifySection = (props) => {
             setErrors(error.response.data.validationErrors);
         }
 
+    }
+
+    const onChangeFile = (event) => {
+        if(event.target.files.length < 1){
+            return;
+        }
+        const file = event.target.files[0];
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+            setNewImage(fileReader.result);
+        }
+        fileReader.readAsDataURL(file);
+
+        uploadFile(file);
+    }
+
+    const uploadFile = async (file) => {
+        const attachment = new FormData();
+        attachment.append('file',file);
+        await postHoaxAttachment(attachment);
     }
 
     return (
@@ -62,10 +87,14 @@ const HoaxifySection = (props) => {
                             </div>
                         </div>
                         {showButtons &&
-                        <div className='mt-2 mb-2 text-end'>
-                            <ButtonWithProgress className='btn btn-primary' buttonText="Hoaxify" onClickMethod={onClickHoaxify} pendingApiCall={pendingApiCall} disabledStatement={pendingApiCall}/>
-                            <button disabled={pendingApiCall} className='btn btn-danger ms-1 me-2' onClick={onClickCancel}>Cancel</button>
-                        </div>
+                        <>
+                            <Input type="file" onChange={onChangeFile} error={undefined}/>
+                            <AutoImageUpload image={newImage} pending={pendingApiCallForImage}/>
+                            <div className='mt-2 mb-2 text-end'>
+                                <ButtonWithProgress className='btn btn-primary' buttonText="Hoaxify" onClickMethod={onClickHoaxify} pendingApiCall={pendingApiCall} disabledStatement={pendingApiCall || pendingApiCallForImage}/>
+                                <button disabled={pendingApiCall} className='btn btn-danger ms-1 me-2' onClick={onClickCancel}>Cancel</button>
+                            </div>
+                        </>
                         }
                     </form>
                 </div>

@@ -52,6 +52,7 @@ public class SecurityConfiguration {
 		    .requestMatchers(HttpMethod.POST,"/api/1.0/auth").authenticated()
 		    .requestMatchers(HttpMethod.PUT,"/api/1.0/users/{username}").authenticated()
 		    .requestMatchers(HttpMethod.POST,"/api/1.0/hoaxes").authenticated()
+		    .requestMatchers(HttpMethod.POST,"/api/1.0/hoax-attachments").authenticated()
 		    .and()
 		    .authorizeHttpRequests()
 		    .anyRequest().permitAll();

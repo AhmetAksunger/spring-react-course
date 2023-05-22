@@ -1,6 +1,7 @@
 package com.hoexify.ws.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,6 +14,7 @@ import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hoexify.ws.configuration.AppConfiguration;
 
@@ -59,6 +61,22 @@ public class FileService {
 		byte[] base64decoded = Base64.getDecoder().decode(image);
 		Tika tika = new Tika();
 		return tika.detect(base64decoded);
+	}
+
+	public String saveHoaxAttachment(MultipartFile multipartFile) {
+
+		String fileName = generateRandomName();
+		File target = new File(appConfiguration.getUploadPath() + "/" + fileName);
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(target);
+			outputStream.write(multipartFile.getBytes());
+
+		} catch (Exception e) {
+		}
+						
+		return fileName;
+		
 	}
 	
 }

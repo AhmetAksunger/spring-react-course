@@ -59,3 +59,7 @@ export const getOldHoaxes = (id,page = 0, size = 5,username = undefined) => {
 export const getNewHoaxesCount = (id) => {
     return axios.get(`/api/1.0/hoaxes/count/${id}`)
 }
+
+export const postHoaxAttachment = (attachment) => {
+    return axios.post("/api/1.0/hoax-attachments",attachment);
+}
