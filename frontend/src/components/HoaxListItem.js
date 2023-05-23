@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 const HoaxListItem = (props) => {
     
-    const {content, timeStamp, user} = props;
+    const {content, timeStamp, user, fileAttachment} = props;
     const {username,displayName,image} = user;
     const {i18n} = useTranslation();
 
@@ -29,6 +29,7 @@ const HoaxListItem = (props) => {
                 <div class="form-group">
                     <textarea class="form-control mt-2 mb-2" value={content}/>
                 </div>
+                {fileAttachment && <img className='img-thumbnail' src={"/images/" + fileAttachment.name}/> }
             </form>
         </div>
     );

@@ -17,4 +17,5 @@ public class HoaxResponse {
 		
 	private GetUsersResponse user;
 	
+	private FileAttachmentResponse fileAttachment;
 }

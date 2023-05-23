@@ -8,21 +8,30 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Date;
 import java.util.UUID;
 
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hoexify.ws.configuration.AppConfiguration;
+import com.hoexify.ws.entity.FileAttachment;
+import com.hoexify.ws.repository.FileAttachmentRepository;
 
 @Service
+@EnableScheduling
 public class FileService {
 
 	@Autowired
 	private AppConfiguration appConfiguration;
+	
+	@Autowired
+	private FileAttachmentRepository fileAttachmentRepository;
 	
 	public String writeBase64EncodedStringToFile(String image) throws IOException {
 				
@@ -63,7 +72,7 @@ public class FileService {
 		return tika.detect(base64decoded);
 	}
 
-	public String saveHoaxAttachment(MultipartFile multipartFile) {
+	public FileAttachment saveHoaxAttachment(MultipartFile multipartFile) {
 
 		String fileName = generateRandomName();
 		File target = new File(appConfiguration.getUploadPath() + "/" + fileName);
@@ -74,9 +83,26 @@ public class FileService {
 
 		} catch (Exception e) {
 		}
-						
-		return fileName;
 		
+		FileAttachment attachment = new FileAttachment();
+		attachment.setName(fileName);
+		attachment.setDate(new Date());
+		
+		return fileAttachmentRepository.save(attachment);
+		
+	}
+	
+	//this function will run each 24 hours
+	@Scheduled(fixedRate = 24* 60 * 60 * 1000)
+	public void cleanupStorage() {
+		//deleting attachments that are not related with any hoax and are from 24 hours ago
+		Date twentyFourHoursAgo = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+		var filesToBeDeleted = fileAttachmentRepository.findByDateBeforeAndHoaxIsNull(twentyFourHoursAgo);
+		
+		for (FileAttachment fileAttachment : filesToBeDeleted) {
+			deleteFile(fileAttachment.getName());
+			fileAttachmentRepository.deleteById(fileAttachment.getId());
+		}
 	}
 	
 }

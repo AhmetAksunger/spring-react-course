@@ -22,6 +22,7 @@ const HoaxifySection = (props) => {
     const [hoax,setHoax] = useState("");
     const [errors,setErrors] = useState({});
     const [newImage, setNewImage] = useState();
+    const [attachmentId,setAttachmentId] = useState();
 
     const onClickTextArea = () => {
         setShowButtons(true);
@@ -36,15 +37,19 @@ const HoaxifySection = (props) => {
         setHoax("")
         setShowButtons(false)
         setNewImage(undefined)
+        setAttachmentId(undefined);
     }
 
     const onClickHoaxify = async () => {
         const body = {
-            content: hoax
+            content: hoax,
+            attachmentId: attachmentId
         };
         try {
             const response = await postHoax(body);
             setHoax("")
+            setNewImage(undefined)
+            setAttachmentId(undefined);
             
         } catch (error) {
             setErrors(error.response.data.validationErrors);
@@ -69,7 +74,8 @@ const HoaxifySection = (props) => {
     const uploadFile = async (file) => {
         const attachment = new FormData();
         attachment.append('file',file);
-        await postHoaxAttachment(attachment);
+        const response = await postHoaxAttachment(attachment);
+        setAttachmentId(response.data.id);
     }
 
     return (

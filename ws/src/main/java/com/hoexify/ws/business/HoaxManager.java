@@ -3,6 +3,7 @@ package com.hoexify.ws.business;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Service;
 import com.hoexify.ws.dto.CreateHoaxRequest;
 import com.hoexify.ws.dto.GetHoaxesResponse;
 import com.hoexify.ws.dto.HoaxResponse;
+import com.hoexify.ws.entity.FileAttachment;
 import com.hoexify.ws.entity.Hoax;
 import com.hoexify.ws.entity.User;
 import com.hoexify.ws.error.NotFoundException;
 import com.hoexify.ws.mapper.ModelMapperService;
+import com.hoexify.ws.repository.FileAttachmentRepository;
 import com.hoexify.ws.repository.HoaxRepository;
 import com.hoexify.ws.repository.UserRepository;
 
@@ -29,6 +32,9 @@ public class HoaxManager implements HoaxService{
 	private UserRepository userRepository;
 	
 	@Autowired
+	private FileAttachmentRepository fileAttachmentRepository;
+	
+	@Autowired
 	private ModelMapperService mapperService;
 	
 	
@@ -39,6 +45,12 @@ public class HoaxManager implements HoaxService{
 		hoax.setTimeStamp(new Date());
 		hoax.setUser(user);
 		hoax = hoaxRepository.save(hoax);
+		Optional<FileAttachment> optional = fileAttachmentRepository.findById(createHoaxRequest.getAttachmentId());
+		if(optional.isPresent()) {
+			FileAttachment attachment = optional.get();
+			attachment.setHoax(hoax);
+			fileAttachmentRepository.save(attachment);
+		}
 		HoaxResponse response = mapperService.forResponse().map(hoax, HoaxResponse.class);
 		return response;
 	}

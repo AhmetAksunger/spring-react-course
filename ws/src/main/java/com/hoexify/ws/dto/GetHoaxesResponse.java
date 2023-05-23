@@ -18,4 +18,7 @@ public class GetHoaxesResponse {
 	private Date timeStamp;
 		
 	private GetUsersResponse user;
+
+	private FileAttachmentResponse fileAttachment;
+
 }
