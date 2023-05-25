@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,5 +66,8 @@ public class HoaxController {
 		return hoaxService.getUserOldHoaxes(page,id,username,direction);
 	}
 	
-	
+	@DeleteMapping("/hoaxes/{id}")
+	void deleteHoax(@PathVariable long id, @CurrentUser User loggedInUser) {
+		hoaxService.delete(id, loggedInUser);
+	}
 }

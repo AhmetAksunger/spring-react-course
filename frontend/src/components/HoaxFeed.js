@@ -27,8 +27,6 @@ const HoaxFeed = () => {
     const pendingApiCall = useApiProgress("get",`/api/1.0/hoaxes/${contentFirstElementId}`);
     const pendingApiCallForNewHoaxes = useApiProgress("get",`/api/1.0/hoaxes?page`);
 
-    console.log(pendingApiCallForNewHoaxes)
-
     useEffect(() => {
         loadHoaxes();
     },[]);
@@ -98,6 +96,10 @@ const HoaxFeed = () => {
         );
     }
 
+    const onDeleteSuccess = () => {
+        loadHoaxes(page.size - 1);
+    }
+
     return (
         <div className='container'>
             {newHoaxesCount > 0 && 
@@ -113,10 +115,10 @@ const HoaxFeed = () => {
             </div>
             }
             {hoaxes.map((value,index) => {
-                const {content: hoaxContent, timeStamp, fileAttachment ,user} = value;
+                const {content: hoaxContent, timeStamp, fileAttachment ,user, id} = value;
                 return (
                     <div>
-                        <HoaxListItem key={index} content={hoaxContent} timeStamp={timeStamp} user={user} fileAttachment={fileAttachment}/>
+                        <HoaxListItem key={index} content={hoaxContent} timeStamp={timeStamp} user={user} fileAttachment={fileAttachment} hoaxId={id} onDeleteSuccess={onDeleteSuccess} />
                     </div>
                 )
             })}

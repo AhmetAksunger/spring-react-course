@@ -16,7 +16,9 @@ import com.hoexify.ws.dto.HoaxResponse;
 import com.hoexify.ws.entity.FileAttachment;
 import com.hoexify.ws.entity.Hoax;
 import com.hoexify.ws.entity.User;
+import com.hoexify.ws.error.AuthorizationException;
 import com.hoexify.ws.error.NotFoundException;
+import com.hoexify.ws.file.FileService;
 import com.hoexify.ws.mapper.ModelMapperService;
 import com.hoexify.ws.repository.FileAttachmentRepository;
 import com.hoexify.ws.repository.HoaxRepository;
@@ -37,6 +39,8 @@ public class HoaxManager implements HoaxService{
 	@Autowired
 	private ModelMapperService mapperService;
 	
+	@Autowired
+	private FileService fileService;
 	
 	@Override
 	public HoaxResponse create(CreateHoaxRequest createHoaxRequest, User user) {
@@ -103,6 +107,24 @@ public class HoaxManager implements HoaxService{
 		Map<String, Long> response = new HashMap<>();
 		response.put("count", newHoaxesCount);
 		return response;
+	}
+
+	@Override
+	public void delete(long id, User loggedInUser) {
+		Optional<Hoax> optionalHoax = hoaxRepository.findById(id);
+		
+		if(!optionalHoax.isPresent()) {
+			throw new AuthorizationException();		}
+		
+		Hoax hoax = optionalHoax.get();
+		if(hoax.getUser().getId() != loggedInUser.getId()) {
+			throw new AuthorizationException();
+		}
+		
+		if(hoax.getFileAttachment() != null) {
+			fileService.deleteFile(hoax.getFileAttachment().getName());
+		}
+		hoaxRepository.deleteById(id);
 	}
 
 }

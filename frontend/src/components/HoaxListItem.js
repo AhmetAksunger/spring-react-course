@@ -3,14 +3,26 @@ import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import { format } from 'timeago.js';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { deleteHoax } from '../api/apiCalls';
 
 const HoaxListItem = (props) => {
     
-    const {content, timeStamp, user, fileAttachment} = props;
+    const loggedInUsername = useSelector((store) => {
+        return store.username;
+    })
+    const {content, timeStamp, user, fileAttachment,hoaxId, onDeleteSuccess} = props;
     const {username,displayName,image} = user;
     const {i18n} = useTranslation();
 
     const formattedTime = format(timeStamp,i18n.language);
+
+    const ownedByLoggedInUser = loggedInUsername === username;
+
+    const onClickDelete = async () => {
+        await deleteHoax(hoaxId);
+        onDeleteSuccess();
+    }
 
     return (
         <div className='card mt-3'>
@@ -23,6 +35,11 @@ const HoaxListItem = (props) => {
                     <span className='ms-2 fw-light'>
                         {formattedTime}
                     </span>
+                    {ownedByLoggedInUser &&
+                    <button className='btn btn-delete-link mt-1 ms-2' onClick={onClickDelete}>
+                        <span class="material-symbols-outlined">delete</span>
+                    </button> 
+                    }
                 </div>
             </div>
             <form>

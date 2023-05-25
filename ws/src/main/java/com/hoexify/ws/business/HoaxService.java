@@ -23,4 +23,6 @@ public interface HoaxService {
 	public Page<GetHoaxesResponse> getUserOldHoaxes(Pageable page, long id, String username, String direction);
 	
 	public Map<String, Long> getNewHoaxesCount(long id);
+
+	public void delete(long id, User loggedInUser);
 }

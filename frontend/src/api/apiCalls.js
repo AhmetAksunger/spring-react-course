@@ -63,3 +63,7 @@ export const getNewHoaxesCount = (id) => {
 export const postHoaxAttachment = (attachment) => {
     return axios.post("/api/1.0/hoax-attachments",attachment);
 }
+
+export const deleteHoax = (id) => {
+    return axios.delete(`/api/1.0/hoaxes/${id}`);
+}
