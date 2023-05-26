@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hoexify.ws.configuration.AppConfiguration;
 import com.hoexify.ws.entity.FileAttachment;
+import com.hoexify.ws.entity.User;
 import com.hoexify.ws.repository.FileAttachmentRepository;
 
 @Service
@@ -102,6 +103,21 @@ public class FileService {
 		for (FileAttachment fileAttachment : filesToBeDeleted) {
 			deleteFile(fileAttachment.getName());
 			fileAttachmentRepository.deleteById(fileAttachment.getId());
+		}
+	}
+
+	public void deleteAllStoredFileForUser(User user) {
+		
+		//deleting the profile image from the storage
+		if(user.getImage() != null) {
+			deleteFile(user.getImage());	
+		}
+		
+		//deleting all of the user's hoaxes' file attachments
+		var fileAttachmentsToBeRemoved = fileAttachmentRepository.findByHoaxUser(user);
+	
+		for (FileAttachment fileAttachment : fileAttachmentsToBeRemoved) {
+			deleteFile(fileAttachment.getName());
 		}
 	}
 	

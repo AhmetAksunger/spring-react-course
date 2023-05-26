@@ -1,28 +1,25 @@
 package com.hoexify.ws.business;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hoexify.ws.dto.GetUsersResponse;
 import com.hoexify.ws.dto.UserUpdateRequest;
+import com.hoexify.ws.entity.FileAttachment;
 import com.hoexify.ws.entity.User;
 import com.hoexify.ws.error.AuthorizationException;
 import com.hoexify.ws.error.NotFoundException;
 import com.hoexify.ws.file.FileService;
 import com.hoexify.ws.mapper.ModelMapperService;
+import com.hoexify.ws.repository.FileAttachmentRepository;
 import com.hoexify.ws.repository.UserRepository;
 
 @Service
@@ -39,9 +36,6 @@ public class UserManager implements UserService {
 	
 	@Autowired
 	private FileService fileService;
-	
-	@Autowired
-	private HoaxService hoaxService;
 	
 	@Override
 	public void save(User user) {
@@ -108,7 +102,9 @@ public class UserManager implements UserService {
 		if(!loggedInUser.getUsername().equals(username)) {
 			throw new AuthorizationException();
 		}
-		hoaxService.deleteUserHoaxes(username);
+		
+		fileService.deleteAllStoredFileForUser(loggedInUser);
+		
 		userRepository.deleteByUsername(username);
 	}
 

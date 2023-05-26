@@ -4,11 +4,12 @@ import { useParams } from 'react-router-dom/cjs/react-router-dom';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import Input from './input';
-import { deleteUser, updateUser } from '../api/apiCalls';
+import { clearAuthorizationHeader, deleteUser, updateUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
-import { updateSuccess } from '../redux/authActions';
+import { logoutSuccess, updateSuccess } from '../redux/authActions';
 import Modal from './Modal';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 //import { Authentication } from '../shared/AuthenticationContext';
 
 const ProfileCard = (props) => {
@@ -21,14 +22,15 @@ const ProfileCard = (props) => {
 
     const {username, displayName, image} = user;
     const dispatch = useDispatch();
-
+    const history = useHistory();
     const [updatedDisplayName,setUpdatedDisplayName] = useState(displayName);
 
 
     const routeParams = useParams();
     const {t} = useTranslation();
     const pendingApiCall = useApiProgress("put",`/api/1.0/users/${username}`)
-    
+    const pendingApiCallForDeleting = useApiProgress("delete",`/api/1.0/users/${username}`)
+
     const {loggedInUsername} = useSelector((store) => {
         return {
             loggedInUsername: store.username
@@ -89,6 +91,10 @@ const ProfileCard = (props) => {
 
     const onClickDeleteModal = async () => {
         await deleteUser(pathUsername);
+        setVisible(false);
+        dispatch(logoutSuccess());
+        clearAuthorizationHeader();
+        history.push("/")
     }
 
     return (
@@ -120,7 +126,7 @@ const ProfileCard = (props) => {
                     {t("Delete my account")}
                 </button>
                 </div>
-                <Modal title={t("Delete Account")} visible={visible} onClickCancel={() => setVisible(false)} onClickDelete={onClickDeleteModal} message={
+                <Modal title={t("Delete Account")} visible={visible} pendingApiCall={pendingApiCallForDeleting} onClickCancel={() => setVisible(false)} onClickDelete={onClickDeleteModal} message={
                     <div>
                         <div className='row'>
                             <strong>{t("Are you sure to delete your account?")}</strong>
