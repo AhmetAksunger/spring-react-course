@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hoexify.ws.entity.User;
 
+import jakarta.transaction.Transactional;
+
 public interface UserRepository extends JpaRepository<User, Long>{
 
 	boolean existsByUsername (String username);
@@ -13,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	User findByUsername(String username);
 
 	Page<User> findByUsernameNot(String username, Pageable page); 
+
+	@Transactional
+	void deleteByUsername(String username);
 }

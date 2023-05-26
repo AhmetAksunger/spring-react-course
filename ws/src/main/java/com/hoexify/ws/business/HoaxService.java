@@ -25,4 +25,6 @@ public interface HoaxService {
 	public Map<String, Long> getNewHoaxesCount(long id);
 
 	public void delete(long id, User loggedInUser);
+	
+	public void deleteUserHoaxes(String username);
 }

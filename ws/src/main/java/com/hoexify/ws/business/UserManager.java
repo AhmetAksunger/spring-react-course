@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.hoexify.ws.dto.GetUsersResponse;
 import com.hoexify.ws.dto.UserUpdateRequest;
 import com.hoexify.ws.entity.User;
+import com.hoexify.ws.error.AuthorizationException;
 import com.hoexify.ws.error.NotFoundException;
 import com.hoexify.ws.file.FileService;
 import com.hoexify.ws.mapper.ModelMapperService;
@@ -38,6 +39,9 @@ public class UserManager implements UserService {
 	
 	@Autowired
 	private FileService fileService;
+	
+	@Autowired
+	private HoaxService hoaxService;
 	
 	@Override
 	public void save(User user) {
@@ -97,6 +101,15 @@ public class UserManager implements UserService {
 		GetUsersResponse response = mapperService.forResponse().map(user, GetUsersResponse.class);
 		return response;
 		
+	}
+
+	@Override
+	public void deleteUser(String username, User loggedInUser) {
+		if(!loggedInUser.getUsername().equals(username)) {
+			throw new AuthorizationException();
+		}
+		hoaxService.deleteUserHoaxes(username);
+		userRepository.deleteByUsername(username);
 	}
 
 }

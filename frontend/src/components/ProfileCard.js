@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom/cjs/react-router-dom';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import Input from './input';
-import { updateUser } from '../api/apiCalls';
+import { deleteUser, updateUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
 import { updateSuccess } from '../redux/authActions';
+import Modal from './Modal';
 //import { Authentication } from '../shared/AuthenticationContext';
 
 const ProfileCard = (props) => {
@@ -16,6 +17,7 @@ const ProfileCard = (props) => {
     const [user,setUser] = useState({...props.user});
     const [newImage,setNewImage] = useState();
     const [errors,setErrors] = useState({});
+    const [visible,setVisible] = useState(false);
 
     const {username, displayName, image} = user;
     const dispatch = useDispatch();
@@ -85,6 +87,10 @@ const ProfileCard = (props) => {
         fileReader.readAsDataURL(file);
     }
 
+    const onClickDeleteModal = async () => {
+        await deleteUser(pathUsername);
+    }
+
     return (
         <div class="card">
             <div className='card-header text-center'>
@@ -97,12 +103,32 @@ const ProfileCard = (props) => {
                 <h5 class="card-title">{displayName}@{username}</h5>
                 
                 {editable &&
+                <>
+                <div className='d-flex flex-column align-items-center'>
                     <button className='btn btn-success' onClick={() => setInEditMode(true)}>
-                    <span class="material-symbols-outlined me-1 d-inline-flex" style={{fontSize:16}}>
-                    edit
+                        <span class="material-symbols-outlined me-1 d-inline-flex" style={{fontSize:16}}>
+                        edit
+                        </span>
+                        {t("Edit")}
+                    </button>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                <button class="btn btn-danger mt-2 d-flex align-items-center" onClick={() => setVisible(true)}>
+                    <span class="material-symbols-outlined mr-1 me-1">
+                    person_remove
                     </span>
-                    {t("Edit")}
-                </button>}
+                    {t("Delete my account")}
+                </button>
+                </div>
+                <Modal title={t("Delete Account")} visible={visible} onClickCancel={() => setVisible(false)} onClickDelete={onClickDeleteModal} message={
+                    <div>
+                        <div className='row'>
+                            <strong>{t("Are you sure to delete your account?")}</strong>
+                        </div>
+                    </div>
+                }/>
+                </>
+               }
                 </>                
                 }
                 

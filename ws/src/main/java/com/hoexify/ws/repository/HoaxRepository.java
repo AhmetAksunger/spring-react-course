@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hoexify.ws.entity.Hoax;
 
+import jakarta.transaction.Transactional;
+
 public interface HoaxRepository extends JpaRepository<Hoax, Long>{
 
 	Page<Hoax> findAllByOrderByTimeStampDesc(Pageable page);
@@ -17,4 +19,7 @@ public interface HoaxRepository extends JpaRepository<Hoax, Long>{
 	Page<Hoax> findByIdLessThanEqualAndUserUsernameOrderByTimeStampDesc(long id, String username, Pageable page);
 
 	long countByIdGreaterThan(long id);
+	
+	@Transactional
+	void deleteByUserUsername(String username);
 }

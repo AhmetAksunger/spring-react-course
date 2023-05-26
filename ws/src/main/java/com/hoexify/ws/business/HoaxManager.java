@@ -127,4 +127,9 @@ public class HoaxManager implements HoaxService{
 		hoaxRepository.deleteById(id);
 	}
 
+	@Override
+	public void deleteUserHoaxes(String username){
+		hoaxRepository.deleteByUserUsername(username);
+	}
+	
 }

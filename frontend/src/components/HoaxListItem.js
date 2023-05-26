@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import { format } from 'timeago.js';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { deleteHoax } from '../api/apiCalls';
+import Modal from './Modal';
+import { useApiProgress } from '../shared/ApiProgress';
 
 const HoaxListItem = (props) => {
     
@@ -13,18 +15,32 @@ const HoaxListItem = (props) => {
     })
     const {content, timeStamp, user, fileAttachment,hoaxId, onDeleteSuccess} = props;
     const {username,displayName,image} = user;
-    const {i18n} = useTranslation();
+    const {i18n, t} = useTranslation();
+
+    const pendingApiCall = useApiProgress("delete",`/api/1.0/hoaxes/${hoaxId}`,true);
+
+    const [visible,setVisible] = useState(false);
 
     const formattedTime = format(timeStamp,i18n.language);
 
     const ownedByLoggedInUser = loggedInUsername === username;
 
-    const onClickDelete = async () => {
+    const onClickDelete = () => {
+        setVisible(true);
+    }
+
+    const onClickCancelModal = () => {
+        setVisible(false);
+    }
+
+    const onClickDeleteModal = async () => {
         await deleteHoax(hoaxId);
         onDeleteSuccess();
+        setVisible(false);
     }
 
     return (
+        <>
         <div className='card mt-3'>
             <div className='row'>
                 <div className='col-auto'>
@@ -49,6 +65,17 @@ const HoaxListItem = (props) => {
                 {fileAttachment && <img className='img-thumbnail' src={"/images/" + fileAttachment.name}/> }
             </form>
         </div>
+        <Modal title={t("Delete hoax")} visible={visible} onClickCancel={onClickCancelModal} onClickDelete={onClickDeleteModal} pendingApiCall={pendingApiCall} message={
+            <div>
+                <div className='row'>
+                    <strong>{t("Are you sure to delete the hoax?")}</strong>
+                </div>
+                <div className='row'>
+                    <span>{content}</span>
+                </div>
+            </div>
+        }/>
+        </>
     );
 };
 

@@ -54,15 +54,17 @@ const HoaxFeedForProfile = () => {
         );
     }
 
-    console.log(pendingApiCall);
+    const onDeleteSuccess = () => {
+        loadHoaxes(page.size - 1);
+    }
 
     return (
         <div>
             {hoaxes.map((value,index) => {
-                const {content: hoaxContent, timeStamp, user} = value;
+                const {content: hoaxContent, timeStamp, user, id} = value;
                 return (
                     <div>
-                        <HoaxListItem key={index} content={hoaxContent} timeStamp={timeStamp} user={user}/>
+                        <HoaxListItem key={index} content={hoaxContent} timeStamp={timeStamp} user={user} hoaxId={id} onDeleteSuccess={onDeleteSuccess}/>
                     </div>
                 )
             })}
