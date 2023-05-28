@@ -25,7 +25,6 @@ const TopBar = (props) => {
 
     const onClickLogout = () => {
         dispatch(logoutSuccess())
-        clearAuthorizationHeader();
         setMenuVisible(false)
     }
 

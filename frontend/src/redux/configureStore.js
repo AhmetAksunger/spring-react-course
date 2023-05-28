@@ -38,7 +38,6 @@ const configureStore = () => {
   store.subscribe(() => {
     updateStateInStorage(store.getState());
     setAuthorizationHeader(store.getState());
-
   })
 
   return store; 

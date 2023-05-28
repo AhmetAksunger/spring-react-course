@@ -38,10 +38,11 @@ const UserLoginPage = (props) => {
             props.history.push("/");
 
             const authState = {
-                username: response.data.username,
-                displayName: response.data.displayName,
-                image: response.data.image,
-                password: password
+                username: response.data.user.username,
+                displayName: response.data.user.displayName,
+                image: response.data.user.image,
+                password: password,
+                token: response.data.token
             }
             
             dispatch(loginSuccess(authState))

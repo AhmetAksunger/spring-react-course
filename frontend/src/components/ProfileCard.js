@@ -93,7 +93,6 @@ const ProfileCard = (props) => {
         await deleteUser(pathUsername);
         setVisible(false);
         dispatch(logoutSuccess());
-        clearAuthorizationHeader();
         history.push("/")
     }
 

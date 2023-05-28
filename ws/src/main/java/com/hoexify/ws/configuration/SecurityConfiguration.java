@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 import jakarta.servlet.ServletException;
@@ -35,7 +36,7 @@ public class SecurityConfiguration {
 		  
 		  http.headers().frameOptions().disable();
 		  
-		  http.httpBasic().authenticationEntryPoint(new AuthenticationEntryPoint() {
+		  http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
 			
 			@Override
 			public void commence(HttpServletRequest request, HttpServletResponse response,
@@ -44,12 +45,12 @@ public class SecurityConfiguration {
 				
 			}
 		});
-		  
+
 		  http
+		  	.httpBasic().disable()
 		    .csrf().disable()
 		    .cors().and()
 		    .authorizeHttpRequests()
-		    .requestMatchers(HttpMethod.POST,"/api/1.0/auth").authenticated()
 		    .requestMatchers(HttpMethod.PUT,"/api/1.0/users/{username}").authenticated()
 		    .requestMatchers(HttpMethod.POST,"/api/1.0/hoaxes").authenticated()
 		    .requestMatchers(HttpMethod.POST,"/api/1.0/hoax-attachments").authenticated()
@@ -58,6 +59,7 @@ public class SecurityConfiguration {
 		    .anyRequest().permitAll();
 		  http.httpBasic(Customizer.withDefaults());
 
+		  http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 
 	    
@@ -77,4 +79,8 @@ public class SecurityConfiguration {
 		  return new ProviderManager(daoProvider);
 	  }
 	  
+	  @Bean
+	  public TokenFilter tokenFilter() {
+		  return new TokenFilter();
+	  }
 }
