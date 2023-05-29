@@ -38,7 +38,7 @@ public class User implements UserDetails{
 	@NotNull(message = "{hoexify.username.NotNull.message}")
 	@NotEmpty
 	@Size(min = 4, max = 20)
-	//@UniqueUsername(message = "{hoexify.username.UniqueUsername.message}")
+	@UniqueUsername(message = "{hoexify.username.UniqueUsername.message}")
 	private String username;
 	
 	@NotNull
@@ -57,7 +57,7 @@ public class User implements UserDetails{
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private List<Hoax> hoaxes;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private List<Token> tokens;
 	
 	@Override

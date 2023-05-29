@@ -10,18 +10,17 @@ import jakarta.validation.ConstraintValidatorContext;
 
 @Component
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String>{
-
+	
 	@Autowired
 	private UserRepository userRepository;
 	
 	@Override
 	public boolean isValid(String username, ConstraintValidatorContext context) {
 		
-		if(userRepository.existsByUsername(username)) {
+		if(this.userRepository.existsByUsername(username)) {
 			return false;
 		}else {
 			return true;
-
 		}
 	}
 

@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import com.hoexify.ws.business.HoaxService;
 import com.hoexify.ws.business.UserService;
 import com.hoexify.ws.dto.CreateHoaxRequest;
-import com.hoexify.ws.entity.Hoax;
 import com.hoexify.ws.entity.User;
 
 @SpringBootApplication()

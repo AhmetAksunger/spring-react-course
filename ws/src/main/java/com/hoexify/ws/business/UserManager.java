@@ -1,10 +1,7 @@
 package com.hoexify.ws.business;
 
 import java.io.IOException;
-import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.hoexify.ws.dto.GetUsersResponse;
 import com.hoexify.ws.dto.UserUpdateRequest;
-import com.hoexify.ws.entity.FileAttachment;
 import com.hoexify.ws.entity.User;
 import com.hoexify.ws.error.AuthorizationException;
 import com.hoexify.ws.error.NotFoundException;
 import com.hoexify.ws.file.FileService;
 import com.hoexify.ws.mapper.ModelMapperService;
-import com.hoexify.ws.repository.FileAttachmentRepository;
 import com.hoexify.ws.repository.UserRepository;
 
 @Service
@@ -107,5 +102,4 @@ public class UserManager implements UserService {
 		
 		userRepository.deleteByUsername(username);
 	}
-
 }

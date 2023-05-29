@@ -11,4 +11,5 @@ import lombok.Data;
 public class AppConfiguration {
 
 	private String uploadPath;
+	
 }
