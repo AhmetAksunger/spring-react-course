@@ -3,6 +3,7 @@ package com.hoexify.ws.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hoexify.ws.business.AuthService;
@@ -21,5 +22,11 @@ public class AuthController {
 				
 		return authService.authenticate(credentials);
 
+	}
+	
+	@PostMapping("/api/1.0/logout")
+	public void handleLogout(@RequestHeader(name = "Authorization") String authorization) {
+		String token = authorization.substring(7);
+		authService.clearToken(token);
 	}
 }

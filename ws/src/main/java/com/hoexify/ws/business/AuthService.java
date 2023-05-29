@@ -76,4 +76,8 @@ public class AuthService {
 		return UUID.randomUUID().toString().replaceAll("-", "");
 	}
 
+	public void clearToken(String token) {
+		tokenRepository.deleteById(token);
+	}
+
 }

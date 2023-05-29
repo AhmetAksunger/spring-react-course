@@ -72,3 +72,12 @@ export const deleteHoax = (id) => {
 export const deleteUser = (username) => {
     return axios.delete(`/api/1.0/users/${username}`)
 }
+
+export const logout = (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    return axios.post("/api/1.0/logout",null,config);
+}

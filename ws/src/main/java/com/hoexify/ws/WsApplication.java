@@ -27,6 +27,7 @@ public class WsApplication {
 				
 				for(int i = 1; i<=25; i++) {
 				
+					/*
 					User user = new User();
 					user.setUsername("user" + i);
 					user.setDisplayName("display" + i);
@@ -39,6 +40,7 @@ public class WsApplication {
 						hoax.setContent("hoax" + j + " " + user.getDisplayName());
 						hoaxService.create(hoax, user);
 					}
+					*/
 					
 					
 				}

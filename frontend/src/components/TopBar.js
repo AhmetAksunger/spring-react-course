@@ -4,7 +4,7 @@ import { useTranslation} from 'react-i18next';
 //import { Authentication } from '../shared/AuthenticationContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from '../redux/authActions';
-import { clearAuthorizationHeader } from "../api/apiCalls";
+import { clearAuthorizationHeader, logout } from "../api/apiCalls";
 import DropdownMenu from "./DropdownMenu";
 import ProfileImageWithDefault from "./ProfileImageWithDefault";
 import { useState } from "react";
@@ -14,18 +14,24 @@ const TopBar = (props) => {
     const [menuVisible,setMenuVisible] = useState(false);
     const {t} = useTranslation();
     const dispatch = useDispatch();
-    const { isLoggedIn, username, displayName, image} = useSelector((store) => {
+    const { isLoggedIn, username, displayName, image, token} = useSelector((store) => {
         return {
             isLoggedIn: store.isLoggedIn,
             username: store.username,
             displayName: store.displayName,
-            image: store.image
+            image: store.image,
+            token: store.token
         };
     });
 
     const onClickLogout = () => {
-        dispatch(logoutSuccess())
-        setMenuVisible(false)
+        try {
+            dispatch(logoutSuccess())
+            setMenuVisible(false)   
+            logout(token);
+        } catch (error) {
+            
+        }
     }
 
     const onClickMyProfile = () => {

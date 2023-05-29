@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,6 +53,7 @@ public class SecurityConfiguration {
 		    .requestMatchers(HttpMethod.PUT,"/api/1.0/users/{username}").authenticated()
 		    .requestMatchers(HttpMethod.POST,"/api/1.0/hoaxes").authenticated()
 		    .requestMatchers(HttpMethod.POST,"/api/1.0/hoax-attachments").authenticated()
+		    .requestMatchers(HttpMethod.POST,"/api/1.0/logout").authenticated()
 		    .and()
 		    .authorizeHttpRequests()
 		    .anyRequest().permitAll();
@@ -68,15 +68,6 @@ public class SecurityConfiguration {
 	  @Bean
 	  public PasswordEncoder passwordEncoder() {
 	    return new BCryptPasswordEncoder();
-	  }
-	  
-	  @Bean
-	  public AuthenticationManager authManager(UserDetailsService detailsService) {
-		  DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-		  daoProvider.setUserDetailsService(detailsService);
-		  daoProvider.setPasswordEncoder(passwordEncoder());
-		  
-		  return new ProviderManager(daoProvider);
 	  }
 	  
 	  @Bean
