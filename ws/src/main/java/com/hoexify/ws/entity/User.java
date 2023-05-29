@@ -57,6 +57,9 @@ public class User implements UserDetails{
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private List<Hoax> hoaxes;
 	
+	@OneToMany(mappedBy = "user")
+	private List<Token> tokens;
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
