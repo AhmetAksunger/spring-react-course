@@ -70,10 +70,11 @@ const UserSignupPage = (props) => {
             const loginResponse = await login(creds);
 
             const authState = {
-                username: loginResponse.data.username,
-                displayName: loginResponse.data.displayName,
-                image: loginResponse.data.image,
-                password: body.password
+                username: loginResponse.data.user.username,
+                displayName: loginResponse.data.user.displayName,
+                image: loginResponse.data.user.image,
+                password: body.password,
+                token: loginResponse.data.token
             }
 
             dispatch(loginSuccess(authState))

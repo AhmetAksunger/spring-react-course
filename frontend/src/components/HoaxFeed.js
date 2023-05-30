@@ -88,7 +88,7 @@ const HoaxFeed = () => {
 
     const {content: hoaxes, last} = page;
 
-    if(hoaxes.length === 0){
+    if(hoaxes.length === 0 && newHoaxesCount === 0){
         return(
             <div className='text-center mt-4'>
                 <span className='alert alert-secondary'>{t("There are no hoaxes")}</span>
